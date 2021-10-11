@@ -39,7 +39,6 @@ void SubThread()
 			game->resetGame();
 			game->startGame();
 		}
-
 		Sleep(17);
 	}
 }

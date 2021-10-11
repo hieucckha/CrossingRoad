@@ -19,6 +19,7 @@
 #define Color_Light_Yellow		0xE
 #define Color_Bright_White		0xF
 
+// 0xAB A is background, B is Color of text
 #define _COLOR(MyBackGround, MyText) ((MyBackGround << 4) | MyText)
 
 void FixConsoleWindow();
