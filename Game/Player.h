@@ -9,11 +9,12 @@ class Player
 private:
 	int x_, y_;
 	bool state_;
+	char(*Buffer_)[120];
 
 public:
 
 	// Maybe change this the default location
-	Player() : x_(39), y_(28), state_(true)
+	Player() : x_(39), y_(28), state_(true), Buffer_(nullptr)
 	{
 
 	}
@@ -24,10 +25,11 @@ public:
 		{" / \\ "}
 	};
 
-	void move(int x, int y)
+	void move(int x, int y, bufferPtr Buffer)
 	{
 		x_ = x;
 		y_ = y;
+		Buffer_ = Buffer;
 	}
 
 	void setState(bool state)
@@ -100,6 +102,21 @@ public:
 	bool isDead() const
 	{
 		return !state_;
+	}
+
+	void drawSprite()
+	{
+		/*
+		 _0_
+		/\_/\
+		 / \
+		*/
+
+		for (int Y = y_ - 1, j = 0; Y <= y_ + 1; ++Y, ++j) {
+			for (int X = x_ - 2, i = 0; X <= x_ + 2; ++X, ++i) {
+				Buffer_[Y][X] = sprite[j][i];
+			}
+		}
 	}
 
 };

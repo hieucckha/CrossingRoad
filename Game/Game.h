@@ -39,6 +39,9 @@ public:
 	{
 	}
 
+	/// <summary>
+	/// Display generated Buffer to the monitor
+	/// </summary>
 	void PrintBuffer()
 	{
 		for (size_t row = 0; row < 30; ++row)
@@ -57,6 +60,9 @@ public:
 		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 120 * 30);
 	}
 
+	/// <summary>
+	/// Generate and display ALL elements of the game
+	/// </summary>
 	void drawGame()
 	{
 		//ClearConsoleScreen();
@@ -89,21 +95,15 @@ public:
 
 		for (size_t i = 0; i < listVehicle_.size(); ++i)
 		{
-			if (listVehicle_[i]->getY() == 22)
-				Buffer[listVehicle_[i]->getY()][listVehicle_[i]->getX()] = 'C';
-			else if (listVehicle_[i]->getY() == 17)
-				Buffer[listVehicle_[i]->getY()][listVehicle_[i]->getX()] = 'T';
+			listVehicle_[i]->draw();
 		}
 
 		for (size_t i = 0; i < listAnimal_.size(); ++i)
 		{
-			if (listAnimal_[i]->getY() == 12)
-				Buffer[listAnimal_[i]->getY()][listAnimal_[i]->getX()] = 'D';
-			else if (listAnimal_[i]->getY() == 7)
-				Buffer[listAnimal_[i]->getY()][listAnimal_[i]->getX()] = 'B';
+			listAnimal_[i]->draw();
 		}
 
-		Buffer[player_.getY()][player_.getX()] = 'P';
+		player_.drawSprite();
 
 		snprintf((*(Buffer + 15) + 90), 14, "Level: %d", level_);
 		PrintBuffer();
@@ -191,10 +191,11 @@ public:
 		g_isRunning = true;
 		player_.setState(true);
 
+		//Temporarily disabled for sprite testing
 		// if level
 		// 5 Car, 5 Truck
 		// Car
-		for (int i = 0; i < 5; ++i)
+		/*for (int i = 0; i < 5; ++i)
 			listVehicle_.push_back(new Car(35 + i * 2, 22));
 		for (int i = 0; i < 5; ++i)
 			listVehicle_.push_back(new Truck(35 + i * 2, 17));
@@ -202,9 +203,14 @@ public:
 		for (int i = 0; i < 5; ++i)
 			listAnimal_.push_back(new Dinosaur(35 + i * 2, 12));
 		for (int i = 0; i < 5; ++i)
-			listAnimal_.push_back(new Bird(35 + i * 2, 7));
+			listAnimal_.push_back(new Bird(35 + i * 2, 7));*/
 
-		player_.move(39, 27);
+		listVehicle_.push_back(new Car(39, 22, Buffer));
+		listVehicle_.push_back(new Truck(39, 17, Buffer));
+		listAnimal_.push_back(new Dinosaur(39, 12, Buffer));
+		listAnimal_.push_back(new Bird(39, 7, Buffer));
+
+		player_.move(39, 27, Buffer);
 	}
 
 	void loadGame(std::istream stream)

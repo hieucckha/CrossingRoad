@@ -37,7 +37,8 @@
 ## TODO:
 
 - [X] Dead & Finish level
-- [ ] Gen level (Same lane but more Car and Animal with faster?)
+- [X] Hiện sprite
+- [ ] Gen level (Same lane but more Car and Animal and faster?)(Either that or the thing can teleport)
 - [ ] Menu
 - [ ] Pause
 - [ ] Save file/Load file
