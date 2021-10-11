@@ -18,6 +18,12 @@ public:
 
 	}
 
+	const char sprite[3][6] = {
+		{" _0_ "},
+		{"/\\_/\\"},
+		{" / \\ "}
+	};
+
 	void move(int x, int y)
 	{
 		x_ = x;

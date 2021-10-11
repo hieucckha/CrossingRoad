@@ -26,6 +26,12 @@ public:
 class Bird : public Animal
 {
 public:
+	const char sprite[4][12] = {
+		{"     __   "},
+		{"    / 7   "},
+		{"<()/____7 "},
+		{" '------\"\""}
+	};
 	Bird(int x, int y)
 	{
 		move(x, y);
@@ -35,6 +41,12 @@ public:
 class Dinosaur : public Animal
 {
 public:
+	const char sprite[4][14] = {
+		{" __          "},
+		{"(_ \\_/\\/\\__  "},
+		{"  \\   _    \\ "},
+		{"   |_| |_|'-\\"}
+	};
 	Dinosaur(int x, int y)
 	{
 		move(x, y);
