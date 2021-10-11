@@ -11,6 +11,12 @@ void SubThread()
 {
 	while (g_isRunning)
 	{
+		if (g_isDeadMenu)
+		{
+			game->drawDeadMenu();
+			continue;
+		}
+
 		if (!game->getPlayer().isDead())
 			game->updatePosPeople(MOVING);
 
@@ -19,18 +25,19 @@ void SubThread()
 		game->updatePosVehicle();
 		game->drawGame();
 
+		// Dead AAAAAAAAAA
 		if (game->getPlayer().isImpact(game->getVehicle()) || game->getPlayer().isImpact(game->getAnimal()))
 		{
-
-			ClearConsoleScreen();
-			std::cout << "Your Died\n";
-			return;
+			// Don't know why the state not set to false, scope
+			game->setPlayerDead();
+			game->resetLevel();
+			g_isDeadMenu = true;
 		}
 		if (game->getPlayer().isFinish())
 		{
-			ClearConsoleScreen();
-			std::cout << "You Finish\n";
-			return;
+			game->levelUp();
+			game->resetGame();
+			game->startGame();
 		}
 
 		Sleep(17);
@@ -66,7 +73,10 @@ void main()
 		} else
 		{
 			if (tmp == 'Y')
+			{
+				game->resetGame();
 				game->startGame();
+			}
 			else
 			{
 				game->exitGame(t1);

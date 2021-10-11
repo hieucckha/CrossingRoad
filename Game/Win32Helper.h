@@ -29,7 +29,7 @@ void SetTextColor(SHORT color);
 
 // https://stackoverflow.com/questions/23369503/get-size-of-terminal-window-rows-columns
 //
-void GetWindowSize(SHORT& row, SHORT& col);
+void GetWindowBufferSize(SHORT& row, SHORT& col);
 
 // https://stackoverflow.com/questions/18028808/remove-blinking-underscore-on-console-cmd-prompt
 //

@@ -10,6 +10,8 @@
 
 ## TODO:
 
+- [X] Dead & Finish level
+- [ ] Gen level (Same lane but more Car and Animal with faster?)
 - [ ] Menu
 - [ ] Pause
 - [ ] Save file/Load file
