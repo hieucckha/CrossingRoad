@@ -5,7 +5,7 @@
 - Clone về hết luôn, t có để cái .sln để có thể bật lên luôn ấy
 - Project Game là chính, còn 2 cái kia chỉ để t test thôi
 - Mới làm phần sườn, còn nhiều thứ chưa làm xong nữa
-
+- Chú ý ghi chú cẩn thận vì là project team, không phải cá nhân, tiện hiểu code
 - Nếu được thì lưu source vào đây luôn cho dễ ghi nhớ
 
 ## TODO:
