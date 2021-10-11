@@ -22,6 +22,7 @@
     <ClCompile Include="Animal.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Pixel.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Win32Helper.cpp" />
@@ -29,6 +30,7 @@
   <ItemGroup>
     <ClInclude Include="Animal.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Pixel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Win32Helper.h" />

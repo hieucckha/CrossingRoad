@@ -21,7 +21,7 @@ void SetTextColor(SHORT color)
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
-void GetWindowSize(SHORT& row, SHORT& col)
+void GetWindowBufferSize(SHORT& row, SHORT& col)
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 

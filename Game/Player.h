@@ -8,12 +8,12 @@ class Player
 {
 private:
 	int x_, y_;
-	bool m_State;
+	bool state_;
 
 public:
 
 	// Maybe change this the default location
-	Player() : x_(39), y_(28), m_State(true)
+	Player() : x_(39), y_(28), state_(true)
 	{
 
 	}
@@ -22,6 +22,11 @@ public:
 	{
 		x_ = x;
 		y_ = y;
+	}
+
+	void setState(bool state)
+	{
+		state_ = state;
 	}
 
 	int getX() const
@@ -88,7 +93,7 @@ public:
 
 	bool isDead() const
 	{
-		return !m_State;
+		return !state_;
 	}
 
 };

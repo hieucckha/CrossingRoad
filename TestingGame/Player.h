@@ -5,10 +5,10 @@ class Player
 {
 private:
 	int x_, y_;
-	bool m_State;
+	bool state_;
 
 public:
-	Player() : x_(39), y_(28), m_State(true)
+	Player() : x_(39), y_(28), state_(true)
 	{
 	}
 
@@ -57,7 +57,7 @@ public:
 
 	bool isDead() const
 	{
-		return !m_State;
+		return !state_;
 	}
 
 	int getX() const

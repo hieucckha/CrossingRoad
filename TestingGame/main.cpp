@@ -1,85 +1,114 @@
-#include "Game.h"
-
 #include <iostream>
-#include <thread>
 #include <conio.h>
 
-char MOVING;
-Game* game;
+char g_keyInput;
 
-void subThread()
+class Menu
 {
-	bool isStarting = true;
-	while (g_isRunning)
+private:
+	signed char choose_;
+
+public:
+	Menu() : choose_(0) {};
+
+	void Up()
 	{
-		if (!game->getPlayer().isDead())
-		{
-			if (isStarting)
-			{
-				game->drawBorder();
-				isStarting = false;
-			}
-
-			game->clearPrevPeople();
-			game->updatePosPeople(MOVING);
-		}
-
-		MOVING = ' ';
-		game->clearPrevVehicle();
-		game->updatePosVehicle();
-
-		game->drawGame();
-
-		if (game->getPlayer().isImpact(game->getVehicle()))
-		{
-			ClearConsoleScreen();
-			std::cout << "You died\n";
-			break;
-		}
-		if (game->getPlayer().isFinish())
-		{
-			ClearConsoleScreen();
-			std::cout << "You finish\n";
-			break;
-		}
-
-		Sleep(1);
+		if (choose_ > 0 && choose_ <= 4)
+			choose_--;
 	}
-}
+
+	void Down()
+	{
+		if (choose_ >= 0 && choose_ < 4)
+			choose_++;
+	}
+
+	void Draw()
+	{
+		for (int i = 0; i < 5; ++i)
+		{
+			if (choose_ == i)
+				std::cout << "[X] This is the " << i << " choose!\n";
+			else
+				std::cout << "[ ] This is the " << i << " choose!\n";
+		}
+	}
+};
+
+class Command
+{
+public:
+	virtual ~Command() {}
+	virtual void execute(Menu*& menu) = 0;
+};
+
+class UpCommand : public Command
+{
+public:
+	virtual void execute(Menu*& menu)
+	{
+		menu->Up();
+	}
+};
+
+class DownCommand : public Command
+{
+public:
+	virtual void execute(Menu*& menu)
+	{
+		menu->Down();
+	}
+};
+
+class InputHandler
+{
+public:
+	InputHandler()
+	{
+		upCommand = new UpCommand();
+		downCommand = new DownCommand();
+	}
+
+	~InputHandler()
+	{
+		delete upCommand;
+		delete downCommand;
+	}
+
+	Command* handleInput()
+	{
+		if (g_keyInput == 'W') return upCommand;
+		else if (g_keyInput == 'S') return downCommand;
+
+		return nullptr;
+	}
+
+private:
+	Command* upCommand;
+	Command* downCommand;
+};
+
 
 int main()
 {
-	game = new Game();
+	Menu* myMenu = new Menu();
+	InputHandler inputHandler;
 
-	int temp;
-
-	FixConsoleWindow();
-	ShowConsoleCursor(false);
-	game->startGame();
-
-	std::thread t1(subThread);
+	myMenu->Draw();
 
 	while (true)
 	{
-		temp = toupper(_getch());
-		if (!game->getPlayer().isDead())
-		{
-			if (temp == 27)
-			{
-				game->exitGame(t1);
-				ClearConsoleScreen();
-				return 0;
-			} else
-			{
-				game->resumeGame(t1);
-				MOVING = temp;
-			}
-		} else
-		{
-			game->exitGame(t1);
-			return 0;
-		}
+		g_keyInput = toupper(_getch());
+		if (g_keyInput == 27)
+			break;
+		Command* command = inputHandler.handleInput();
+		if (command)
+			command->execute(myMenu);
+
+		system("cls");
+		myMenu->Draw();
 	}
 
+	delete myMenu;
 	return 0;
 }

@@ -9,11 +9,12 @@
 #include <thread>
 #include <vector>
 #include <cstring>
+#include <cstdio>
 
-static bool g_isRunning = true;
+static bool g_isRunning = false;
 static bool g_isPause = false;
-static bool g_isMenu = true;
-
+static bool g_isMenu = false;
+static bool g_isDeadMenu = false;
 
 class Game
 {
@@ -22,6 +23,8 @@ private:
 	std::vector<Vehicle*> listVehicle_;
 
 	Player player_;
+
+	int level_;
 
 	char PrevBuffer[30][120];
 	char Buffer[30][120];
@@ -36,33 +39,49 @@ public:
 	{
 	}
 
+	void PrintBuffer()
+	{
+		for (size_t row = 0; row < 30; ++row)
+		{
+			for (size_t col = 0; col < 120; ++col)
+			{
+				if (Buffer[row][col] == PrevBuffer[row][col])
+					continue;
+
+				GotoXY(col, row);
+				std::cout << Buffer[row][col];
+			}
+		}
+
+		std::cout.flush();
+		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 120 * 30);
+	}
+
 	void drawGame()
 	{
 		//ClearConsoleScreen();
 		int row = 30, col = 120;
+
+		for (int i = 0; i < row; ++i)
+			Buffer[i][col - 1] = '\n';
 
 		for (int r = 0; r < row; ++r)
 		{
 			for (int c = 0; c < col - 40; ++c)
 			{
 				if (r == 0 || r == row - 1)
-				{
 					Buffer[r][c] = '#';
-				} else if (r % 5 == 0)
+				else if (r % 5 == 0)
 				{
 					if (c == 0 || c == col - 41)
-					{
 						Buffer[r][c] = '#';
-						Buffer[r][c + 1] = '\n';
-					} else
+					else
 						Buffer[r][c] = '_';
 				} else
 				{
 					if (c == 0 || c == col - 41)
-					{
 						Buffer[r][c] = '#';
-						Buffer[r][c + 1] = '\n';
-					} else
+					else
 						Buffer[r][c] = ' ';
 				}
 			}
@@ -86,20 +105,40 @@ public:
 
 		Buffer[player_.getY()][player_.getX()] = 'P';
 
-		for (size_t row = 0; row < 30; ++row)
-		{
-			for (size_t col = 0; col < 120; ++col)
-			{
-				if (Buffer[row][col] == PrevBuffer[row][col])
-					continue;
+		snprintf((*(Buffer + 15) + 90), 14, "Level: %d", level_);
+		PrintBuffer();
+	}
 
-				GotoXY(col, row);
-				std::cout << Buffer[row][col];
-			}
-		}
+	void drawDeadMenu()
+	{
+		/*
+			################################
+			#                              #
+			#  Press Y to continue playing #
+			#                              #
+			################################
+		*/
 
-		std::cout.flush();
-		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 120 * 30);
+		char DeadMenu[5][33] = {
+			{"################################"},
+			{"#                              #"},
+			{"#  Press Y to continue playing #"},
+			{"#                              #"},
+			{"################################"}
+		};
+
+		memcpy((*(Buffer + 1) + 30), (DeadMenu + 1), sizeof(DeadMenu[1]));
+
+		for (int i = 0; i < 5; ++i)
+			memcpy((*(Buffer + 15 + i) + 30), (DeadMenu + i), sizeof(DeadMenu[i]));
+
+		PrintBuffer();
+	}
+
+	// ! Error, don't know why the dead not toggle
+	void setPlayerDead()
+	{
+		player_.setState(false);
 	}
 
 	Player getPlayer() const
@@ -117,9 +156,27 @@ public:
 		return listVehicle_;
 	}
 
+	void levelUp()
+	{
+		level_++;
+	}
+
+	void resetLevel()
+	{
+		level_ = 0;
+	}
+
 	void resetGame()
 	{
+		for (size_t i = 0; i < listAnimal_.size(); ++i)
+			delete listAnimal_[i];
+		listAnimal_.resize(0);
 
+		for (size_t i = 0; i < listVehicle_.size(); ++i)
+			delete listVehicle_[i];
+		listVehicle_.resize(0);
+
+		g_isDeadMenu = false;
 	}
 
 	void exitGame(std::thread& thd)
@@ -132,6 +189,7 @@ public:
 	void startGame()
 	{
 		g_isRunning = true;
+		player_.setState(true);
 
 		// if level
 		// 5 Car, 5 Truck
