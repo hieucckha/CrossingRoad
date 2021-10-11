@@ -1,0 +1,8 @@
+# Folder
+Debug/
+.vs/
+**/Debug/
+
+# File
+*.vcxproj.filters
+*.vcxproj.user
