@@ -9,7 +9,7 @@ class Player
 private:
 	int x_, y_;
 	bool state_;
-	char(*Buffer_)[120];
+	bufferPtr Buffer_;
 
 public:
 
@@ -46,24 +46,30 @@ public:
 		return y_;
 	}
 
-	void Up(int x)
+	void Up()
 	{
 		if (y_ >= 0)
-			y_--;
+			if (y_ == 27)
+				y_ -= 4;
+			else
+				y_ -= 5;
 	}
-	void Left(int x)
+	void Left()
 	{
-		if (x_ >= 0)
+		if (x_ > 3)
 			x_--;
 	}
-	void Down(int x)
+	void Down()
 	{
-		if (y_ < 30)
-			y_++;
+		if (y_ < 28)
+			if (y_ == 23)
+				y_ += 4;
+			else if (y_ != 27)
+				y_ += 5;
 	}
-	void Right(int x)
+	void Right()
 	{
-		if (x_ < 80)
+		if (x_ < 76)
 			x_++;
 	}
 
@@ -91,7 +97,7 @@ public:
 
 	bool isFinish() const
 	{
-		if (y_ == 3)
+		if (y_ <= 3)
 		{
 			return true;
 		}

@@ -95,12 +95,12 @@ public:
 
 		for (size_t i = 0; i < listVehicle_.size(); ++i)
 		{
-			listVehicle_[i]->draw();
+			listVehicle_[i]->drawSprite();
 		}
 
 		for (size_t i = 0; i < listAnimal_.size(); ++i)
 		{
-			listAnimal_[i]->draw();
+			listAnimal_[i]->drawSprite();
 		}
 
 		player_.drawSprite();
@@ -236,13 +236,13 @@ public:
 	void updatePosPeople(char moveKey)
 	{
 		if (moveKey == 'W')
-			player_.Up(1);
+			player_.Up();
 		else if (moveKey == 'A')
-			player_.Left(1);
+			player_.Left();
 		else if (moveKey == 'S')
-			player_.Down(1);
+			player_.Down();
 		else if (moveKey == 'D')
-			player_.Right(1);
+			player_.Right();
 	}
 
 	void updatePosVehicle()

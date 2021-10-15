@@ -37,7 +37,10 @@ public:
 		return Buffer_;
 	}
 
-	void draw();
+	void virtual drawSprite()
+	{
+		return;
+	}
 };
 
 class Bird : public Animal
@@ -55,10 +58,12 @@ public:
 		move(x, y, Buffer);
 	}
 
-	void drawSprite()
+	void drawSprite() override
 	{
 		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
 			for (int X = this->getX() - 4, i = 0; X <= this->getX() + 5; ++X, ++i) {
+				if (X <= 0 || X > 78)
+					continue;
 				this->getBuffer()[Y][X] = sprite[j][i];
 			}
 		}
@@ -79,28 +84,14 @@ public:
 		move(x, y, Buffer);
 	}
 
-	void drawSprite()
+	void drawSprite() override
 	{
 		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
 			for (int X = this->getX() - 5, i = 0; X <= this->getX() + 7; ++X, ++i) {
+				if (X <= 0 || X > 78)
+					continue;
 				this->getBuffer()[Y][X] = sprite[j][i];
 			}
 		}
 	}
 };
-
-inline void Animal::draw() 
-{
-	{
-		if (y_ == 7)
-		{
-			Bird bird(x_, y_, Buffer_);
-			bird.drawSprite();
-		}
-		else if (y_ == 12)
-		{
-			Dinosaur dino(x_, y_, Buffer_);
-			dino.drawSprite();
-		}
-	}
-}
