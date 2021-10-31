@@ -46,6 +46,7 @@ void SubThread()
 void main()
 {
 	game = new Game();
+
 	int tmp = 0;
 
 	FixConsoleWindow();
@@ -56,20 +57,38 @@ void main()
 	while (true)
 	{
 		tmp = toupper(_getch());
+		if (tmp == 'T')
+		{
+			game->pauseGame(t1.native_handle());
+			if (game->loadGame() == true)
+			{
+				game->resetGame();
+				game->startGame();
+			}
+			else
+				game->resumeGame(t1.native_handle());
+		}
+		if (tmp == 'L')
+		{
+			game->pauseGame(t1.native_handle());
+			game->resumeGame(t1.native_handle());
+		}
 		if (!game->getPlayer().isDead())
 		{
 			if (tmp == 27)
 			{
 				game->exitGame(t1);
 				return;
-			} else if (tmp == 'P')
+			}
+			else if (tmp == 'P')
 				game->pauseGame(t1.native_handle());
 			else
 			{
 				game->resumeGame(t1.native_handle());
 				MOVING = tmp;
 			}
-		} else
+		}
+		else
 		{
 			if (tmp == 'Y')
 			{

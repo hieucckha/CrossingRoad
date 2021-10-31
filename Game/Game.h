@@ -10,6 +10,8 @@
 #include <vector>
 #include <cstring>
 #include <cstdio>
+#include <fstream>
+#include <string>
 
 static bool g_isRunning = false;
 static bool g_isPause = false;
@@ -213,14 +215,140 @@ public:
 		player_.move(39, 27, Buffer);
 	}
 
-	void loadGame(std::istream stream)
+	bool loadGame()
 	{
+		//std::fstream filename("SaveGame.txt", std::ios::in);
+		//std::vector<std::string> listName;
+		//std::vector<int> listLevel;
+		//std::string temp1;
+		//int temp2, cor_x = 15, cor_y = 5;
 
+		////Get the information from file text
+		//while (filename.eof() == false)
+		//{
+		//	filename >> temp2;
+		//	filename.ignore(80, ' ');
+		//	getline(filename, temp1);
+		//	listName.push_back(temp1);
+		//	listLevel.push_back(temp2);
+		//}
+		//filename.close();
+
+		////Print the load game
+		//char Load[20][50];
+		//for (int i = 0; i < 20; i++)
+		//	for (int j = 0; j < 50; j++)
+		//		if (i == 0 || i == 19)
+		//			Load[i][j] = '#';
+		//		else
+		//			if (j == 0 || j == 49)
+		//				Load[i][j] = '#';
+		//			else
+		//				Load[i][j] = ' ';
+		//for (int i = 0; i < 20; i++)
+		//{
+		//	GotoXY(cor_x, cor_y + i);
+		//	for (int j = 0; j < 50; j++)
+		//		std::cout << Load[i][j];
+		//	std::cout << std::endl;
+		//}
+		//GotoXY(cor_x, cor_y + 2); std::cout << "\t\t\t   LOAD GAME";
+		//GotoXY(cor_x, cor_y + 4); std::cout << "\t   The nickname in the game:";
+		//if (listName.size() == 0)
+		//{
+		//	GotoXY(cor_x, cor_y + 5);
+		//	std::cout << "\tDon't have any nickname saved to load!";
+		//	return false;
+		//}
+		//for (unsigned int i = 0; i < listName.size(); i++)
+		//{
+		//	GotoXY(cor_x, cor_y + 5 + i); 
+		//	std::cout << "\t\t" << listName[i] << " - Level: " << listLevel[i];
+		//}
+		//GotoXY(cor_x, cor_y + 17); std::cout << "\t Enter the nickname you choose: ";
+		//getline(std::cin, temp1);
+		//for (int i = 0; i < listName.size(); i++)
+		//	if (temp1 == listName[i])
+		//	{
+		//		level_ = listLevel[i];
+		//		return true;
+		//	}
+		//GotoXY(cor_x, cor_y + 18); std:: cout << "\t\tDon't have any nickname saved to load!";
+		//Sleep(5);
+		//return false;
+
+		char tempBuffer[30][120];
+		std::memcpy((char*)tempBuffer, (const char*)Buffer, 120 * 30);
+		for (int i = 5; i < 29; i++)
+			for (int j = 1; j < 78; j++)
+				Buffer[i][j] = 'M';
+		PrintBuffer();
+		std::memcpy((char*)Buffer, (const char*)tempBuffer, 120 * 30);
+		return true;
 	}
 
-	void saveGame(std::istream stream)
+	void saveGame()
 	{
+		//int cor_x = 15, cor_y = 5;
+		//std::string temp;
+		//char Load[20][50];
 
+		////Print the save game
+		//for (int i = 0; i < 20; i++)
+		//	for (int j = 0; j < 50; j++)
+		//		if (i == 0 || i == 19)
+		//			Load[i][j] = '#';
+		//		else
+		//			if (j == 0 || j == 49)
+		//				Load[i][j] = '#';
+		//			else
+		//				Load[i][j] = ' ';
+		//for (int i = 0; i < 20; i++)
+		//{
+		//	GotoXY(cor_x, cor_y + i);
+		//	for (int j = 0; j < 50; j++)
+		//		std::cout << Load[i][j];
+		//	std::cout << std::endl;
+		//}
+		//GotoXY(cor_x, cor_y + 2); std::cout << "\t\t\t   SAVE GAME";
+		//GotoXY(cor_x, cor_y + 10); std::cout << "\t Enter the nickname you save: ";
+		//getline(std::cin, temp);
+
+		////Add the new nickname into the file text
+		//std::fstream filename("SaveGame.txt", std::ios::app);
+		//filename << level_ << " " << temp << std::endl;;
+		//filename.close();
+
+		////Check and delete the old nickname (the number of nickname <= 10)
+		//std::vector<std::string> listName;
+		//std::vector<int> listLevel;
+		//std::string temp1;
+		//int temp2;
+
+		////Get the information from file text
+		//std::fstream in("SaveGame.txt", std::ios::in);
+		//while (in.eof() == false)
+		//{
+		//	in >> temp2;
+		//	in.ignore(80, ' ');
+		//	getline(in, temp1);
+		//	listName.push_back(temp1);
+		//	listLevel.push_back(temp2);
+		//}
+		//in.close();
+		//if (listName.size() > 10)
+		//{
+		//	for (int i = 0; i < listName.size() - 10; i++)
+		//	{
+		//		listName.erase(listName.begin());
+		//		listLevel.erase(listLevel.begin());
+		//	}
+		//}
+		////Print to the file text
+		//std::fstream out("SaveGame.txt", std::ios::out);
+		//for (int i = 0; i < listName.size(); i++)
+		//	out << listLevel[i] << " " << listName[i] << std::endl;
+		//out.close();
 	}
 
 	void pauseGame(HANDLE hd)
