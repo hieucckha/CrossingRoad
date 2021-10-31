@@ -1,34 +1,44 @@
 #pragma once
 #include "Win32Helper.h"
-#include <vector>
 
 class Pixel
 {
 private:
-	char pixel_;
-	unsigned char text_, background_;
+	char content_;
+	unsigned char foreground_, background_;
 
 public:
+	friend class Scene;
 	Pixel()
 	{
-		pixel_ = ' ';
-		text_ = Color_White;
-		background_ = Color_Black;
+		content_ = ' ';
+		foreground_ = FOREGROUND_WHITE;
+		background_ = BACKGROUND_BLACK;
 	}
-};
 
-class Scene
-{
-private:
-	SHORT width_, length_;
-	Pixel** scene_;
-
-public:
-	Scene()
+	void setContent(char chr)
 	{
-		GetWindowBufferSize(width_, length_);
-		scene_ = new Pixel * [width_];
-		for (size_t i = 0; i < width_; ++i)
-			scene_[i] = new Pixel[length_];
+		content_ = chr;
+	}
+	void setForeGround(unsigned char color)
+	{
+		foreground_ = color;
+	}
+	void setBackground(unsigned char color)
+	{
+		background_ = color;
+	}
+	char& getContent()
+	{
+		return content_;
+	}
+	unsigned char getForeground() const
+	{
+		return foreground_;
+	}
+	unsigned char getBackground() const
+	{
+		return background_;
 	}
 };
+

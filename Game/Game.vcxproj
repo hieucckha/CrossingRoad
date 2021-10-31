@@ -20,18 +20,31 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animal.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyRow.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pixel.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Point2D.cpp" />
+    <ClCompile Include="OneRow.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SpritesModel.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Win32Helper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animal.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyRow.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Point2D.h" />
+    <ClInclude Include="OneRow.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SpritesModel.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="Win32Helper.h" />
   </ItemGroup>

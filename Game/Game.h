@@ -1,387 +1,610 @@
 #pragma once
-#include "Animal.h"
-#include "Vehicle.h"
+#pragma warning( disable : 4018 )
+
+//#include "Animal.h"
+//#include "Vehicle.h"
 #include "Player.h"
+#include "EnemyRow.h"
+#include "Scene.h"
+#include "Define.h"
 #include "Win32Helper.h"
 
-#include "Windows.h"
-#include <iostream>
-#include <thread>
-#include <vector>
-#include <cstring>
-#include <cstdio>
+//#include "Windows.h"
+//#include <iostream>
+//#include <thread>
+//#include <vector>
+//#include <cstring>
+//#include <cstdio>
+#include <conio.h>
 #include <fstream>
-#include <string>
-
-static bool g_isRunning = false;
-static bool g_isPause = false;
-static bool g_isMenu = false;
-static bool g_isDeadMenu = false;
+//#include <cctype>
 
 class Game
 {
 private:
-	std::vector<Animal*> listAnimal_;
-	std::vector<Vehicle*> listVehicle_;
+	int level_;
+	int playerRow_;
 
 	Player player_;
+	// Control all row which had enemy 
+	EnemyRow enemyRow_;
 
-	int level_;
+	// Will draw and show to console
+	Scene theScene_;
 
-	char PrevBuffer[30][120];
-	char Buffer[30][120];
+
+	int inputKey()
+	{
+		if (_kbhit())
+		{
+			int key = _getch();
+
+			return key;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	void SaveFile(std::string fileName, unsigned int tick)
+	{
+		// If folder data not exist
+		if (!dir_exists("./data/"))
+			CreateDirectoryA("./data/", NULL);
+
+		std::string path = "./data/" + fileName + ".bin";
+		std::ofstream os(path, std::ios::out | std::ios::binary);
+
+		// level_ : int 
+		// playerRow_ : int 
+		// player_ : Player -> coord()
+		// enemyRow_ : EnemyRow 
+
+		// Tick
+		os.write(reinterpret_cast<char*>(&tick), sizeof(tick));
+		// Level
+		int tmp = level_;
+		os.write(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+		// Current Row of Player
+		tmp = playerRow_;
+		os.write(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+		// Coord X of Player
+		tmp = player_.getCoord().getX();
+		os.write(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+		// Coord Y of Player
+		tmp = player_.getCoord().getY();
+		os.write(reinterpret_cast<char*>(&tmp), sizeof(tmp));
+
+		for (auto& mem : enemyRow_.getListRow())
+		{
+			int tmpInt = 0;
+			bool tmpBool = 0;
+			size_t numEnemy = mem->getEnemyList().size();
+			os.write(reinterpret_cast<char*>(&numEnemy), sizeof(numEnemy));
+
+			// Coord of each enemy in row
+			for (auto& enemy : mem->getEnemyList())
+			{
+				tmpInt = enemy->getCoord().getX();
+				os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+				tmpInt = enemy->getCoord().getY();
+				os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+			}
+
+			// Type
+			tmpInt = mem->getType();
+			os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+
+			// LinearRandom
+			tmpBool = mem->getLinearRandom();
+			os.write(reinterpret_cast<char*>(&tmpBool), sizeof(tmpBool));
+
+			// Direction
+			tmpBool = mem->getDirection();
+			os.write(reinterpret_cast<char*>(&tmpBool), sizeof(tmpBool));
+
+			// Red Light Or Not
+			tmp = mem->getIsRedLight();
+			os.write(reinterpret_cast<char*>(&tmpBool), sizeof(tmpBool));
+
+			// Red Light Time
+			tmpInt = mem->getRedLightTime();
+			os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+
+			// Speed
+			tmpInt = mem->getSpeed();
+			os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+
+			// Current Row
+			tmpInt = mem->getCurrentRow();
+			os.write(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+		}
+	}
+	// Return name
+	std::vector<std::string> getAllFilename(const std::string& name)
+	{
+		std::vector<std::string> listFileName;
+		std::string pattern(name);
+		pattern.append("\\*");
+
+		WIN32_FIND_DATAA data;
+		HANDLE hFind;
+
+		if ((hFind = FindFirstFileA(pattern.c_str(), &data)) != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				std::string str(data.cFileName);
+				if (str[0] == '.')
+					continue;
+
+				listFileName.push_back(str);
+			} while (FindNextFileA(hFind, &data) != 0);
+
+			FindClose(hFind);
+		}
+
+		return listFileName;
+	}
+	// Return current tick
+	unsigned int LoadFile(const std::string folder, std::string fileName)
+	{
+		std::string filePath = "./" + folder + "/" + fileName;
+		std::ifstream is(filePath, std::ios::in | std::ios::binary);
+		if (is.fail())
+		{
+			return -1;
+		}
+
+		unsigned int tick = 0;
+
+		int tmpInt = 0;
+		int tmpInt2 = 0;
+		bool tmpBool = false;
+
+		// Tick
+		is.read(reinterpret_cast<char*>(&tick), sizeof(tick));
+		// Level
+		is.read(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+		level_ = tmpInt;
+		// Player Row
+		is.read(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+		playerRow_ = tmpInt;
+		// Player Coord X and Y
+		is.read(reinterpret_cast<char*>(&tmpInt), sizeof(tmpInt));
+		is.read(reinterpret_cast<char*>(&tmpInt2), sizeof(tmpInt2));
+		player_.setCoord(tmpInt, tmpInt2);
+
+		enemyRow_.cleanRow();
+		for (int i = 0; i < 6; ++i)
+		{
+			std::vector<Enemy*> listEnemy;
+
+			int nEnemy = 0;
+			is.read(reinterpret_cast<char*>(&nEnemy), sizeof(nEnemy));
+			for (int i = 0; i < nEnemy; ++i)
+			{
+				int coordX = 0, coordY = 0;
+				is.read(reinterpret_cast<char*>(&coordX), sizeof(coordX));
+				is.read(reinterpret_cast<char*>(&coordY), sizeof(coordY));
+				Enemy* enemy = new Enemy(coordX, coordY);
+				listEnemy.push_back(enemy);
+			}
+
+			int type = 0;
+			is.read(reinterpret_cast<char*>(&type), sizeof(type));
+
+			bool linearRandom = 0;
+			is.read(reinterpret_cast<char*>(&linearRandom), sizeof(linearRandom));
+
+			bool direction = 0;
+			is.read(reinterpret_cast<char*>(&direction), sizeof(direction));
+
+			bool isRedLight = 0;
+			is.read(reinterpret_cast<char*>(&isRedLight), sizeof(isRedLight));
+
+			int redLightTime = 0;
+			is.read(reinterpret_cast<char*>(&redLightTime), sizeof(redLightTime));
+
+			int speed = 0;
+			is.read(reinterpret_cast<char*>(&speed), sizeof(speed));
+
+			int currRow = 0;
+			is.read(reinterpret_cast<char*>(&currRow), sizeof(currRow));
+
+			OneRow* oneRow = new OneRow(listEnemy, type, linearRandom, direction, isRedLight, redLightTime, speed, currRow);
+			enemyRow_.getListRow().push_back(oneRow);
+		}
+
+		return tick;
+	}
+
 public:
 	Game()
 	{
-		memset(PrevBuffer, (int)' ', 120 * 30);
-		memset(Buffer, (int)' ', 120 * 30);
+		level_ = 0;
+		playerRow_ = 7;
 	}
-
 	~Game()
 	{
 	}
 
-	/// <summary>
-	/// Display generated Buffer to the monitor
-	/// </summary>
-	void PrintBuffer()
+	void Menu()
 	{
-		for (size_t row = 0; row < 30; ++row)
-		{
-			for (size_t col = 0; col < 120; ++col)
-			{
-				if (Buffer[row][col] == PrevBuffer[row][col])
-					continue;
+		unsigned int tick = 0;
 
-				GotoXY(col, row);
-				std::cout << Buffer[row][col];
+		int choose = 0;
+		while (true)
+		{
+			theScene_.drawAllWhite();
+			theScene_.drawMenu(choose);
+			theScene_.showScene();
+
+			switch (inputKey())
+			{
+			case 'w':
+				if (choose > 0)
+					choose--;
+				theScene_.drawMenu(choose);
+				theScene_.showScene();
+				break;
+			case 's':
+				if (choose < 3)
+					choose++;
+				theScene_.drawMenu(choose);
+				theScene_.showScene();
+				break;
+			case 13:
+				switch (choose)
+				{
+				// New Game
+				case 0:
+					runGame(tick);
+					break;
+				// Load Game
+				case 1:
+					// Return tick
+					g_isPause = true;
+					tick = runLoadGame("data");
+					if (tick != -1)
+						runGame(tick);
+					break;
+				// Setting
+				case 2:
+					runSetting();
+					break;
+				// Quit
+				default:
+					ClearConsoleScreen();
+					return;
+				}
+				break;
+			default:
+				break;
 			}
 		}
-
-		std::cout.flush();
-		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 120 * 30);
 	}
-
-	/// <summary>
-	/// Generate and display ALL elements of the game
-	/// </summary>
-	void drawGame()
+	void runGame(int tick)
 	{
-		//ClearConsoleScreen();
-		int row = 30, col = 120;
+		// 1 While loop done -> 1 tick
+		unsigned int tick_ = tick;
 
-		for (int i = 0; i < row; ++i)
-			Buffer[i][col - 1] = '\n';
+		theScene_.drawBorder();
+		theScene_.drawLevelAndInfo(level_);
+		theScene_.drawPlayer(this->player_);
+		theScene_.showScene();
 
-		for (int r = 0; r < row; ++r)
+		while (true)
 		{
-			for (int c = 0; c < col - 40; ++c)
+			if (_kbhit())
 			{
-				if (r == 0 || r == row - 1)
-					Buffer[r][c] = '#';
-				else if (r % 5 == 0)
+				int key = _getch();
+
+				// Pause
+				if (key == 'p')
 				{
-					if (c == 0 || c == col - 41)
-						Buffer[r][c] = '#';
-					else
-						Buffer[r][c] = '_';
-				} else
+					g_isPause = true;
+				}
+				// Resume
+				else if (key == 'r')
 				{
-					if (c == 0 || c == col - 41)
-						Buffer[r][c] = '#';
-					else
-						Buffer[r][c] = ' ';
+					g_isPause = false;
+				}
+				// Load Game
+				else if (key == 'l')
+				{
+					tick_ = runLoadGame("data");
+				}
+				// Save Game
+				else if (key == 't')
+				{
+					runSaveGame(tick);
+				}
+				// Moving Left
+				else if (key == 'a' && !g_isPause)
+				{
+					player_.move(DIRECTION_PLAYER::LEFT_DIRECTION);
+				}
+				// Moving Up
+				else if (key == 'w' && !g_isPause)
+				{
+					player_.move(DIRECTION_PLAYER::TOP_DIRECTION);
+					if (playerRow_ <= 7 && playerRow_ > 0)
+						playerRow_--;
+				}
+				// Moving Right
+				else if (key == 'd' && !g_isPause)
+				{
+					player_.move(DIRECTION_PLAYER::RIGHT_DIRECTION);
+				}
+				// Moving Down
+				else if (key == 's' && !g_isPause)
+				{
+					player_.move(DIRECTION_PLAYER::BOTTOM_DIRECTION);
+					if (playerRow_ >= 0 && playerRow_ < 7)
+						playerRow_++;
+				}
+				// Return to menu
+				else if (key == 'q')
+				{
+					level_ = 0;
+					player_.reset();
+					playerRow_ = 7;
+					enemyRow_.setLevel(level_);
+					player_.setStateTrue();
+					return;
 				}
 			}
-		}
 
-		for (size_t i = 0; i < listVehicle_.size(); ++i)
+			// Draw 
+			if (!g_isPause)
+			{
+				theScene_.drawBorder();
+				theScene_.drawLevelAndInfo(level_);
+				theScene_.drawIsPause(g_isPause);
+
+				theScene_.drawPlayer(this->player_);
+				if (player_.checkCollistion(this->enemyRow_, playerRow_))
+					player_.setStateFalse();
+				for (int i = 0; i < MAXIMUN_ENEMY_ROW; ++i)
+				{
+					enemyRow_.update(tick_, this->playerRow_, i, level_);
+					theScene_.drawOneRow(this->enemyRow_, i);
+					if (player_.checkCollistion(this->enemyRow_, playerRow_))
+						player_.setStateFalse();
+				}
+
+				theScene_.showScene();
+			}
+			else
+			{
+				theScene_.drawBorder();
+				theScene_.drawLevelAndInfo(level_);
+				theScene_.drawIsPause(g_isPause);
+
+				theScene_.drawPlayer(this->player_);
+				for (int i = 0; i < MAXIMUN_ENEMY_ROW; ++i)
+					theScene_.drawOneRow(this->enemyRow_, i);
+
+				theScene_.showScene();
+			}
+
+			// Dead
+			if (!player_.getState())
+			{
+				for (int i = 0; i < 10; ++i)
+				{
+					theScene_.drawDeadScene(i);
+					theScene_.showScene();
+					Sleep(300);
+				}
+
+				int choose = 0;
+
+				// Choose to continue play
+				theScene_.drawContinueGame(choose);
+				theScene_.showScene();
+
+				while (true)
+				{
+
+					int tmp = _getch();
+					if (tmp == 'w')
+					{
+						if (choose > 0)
+							choose--;
+					}
+					else if (tmp == 's')
+					{
+						if (choose < 1)
+							choose++;
+					}
+					// Enter
+					else if (tmp == 13)
+					{
+						// Yes
+						if (choose == 0)
+						{
+							break;
+						}
+						// No
+						else
+						{
+							level_ = 0;
+							player_.reset();
+							playerRow_ = 7;
+							enemyRow_.setLevel(level_);
+							player_.setStateTrue();
+							return;
+						}
+					}
+
+					theScene_.drawContinueGame(choose);
+					theScene_.showScene();
+				}
+
+				level_ = 0;
+
+				player_.reset();
+				playerRow_ = 7;
+
+				enemyRow_.setLevel(level_);
+
+				theScene_.drawBorder();
+				theScene_.drawLevelAndInfo(level_);
+				theScene_.drawPlayer(this->player_);
+				theScene_.showScene();
+				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+				player_.setStateTrue();
+			}
+
+			// Finish
+			if (playerRow_ == 0)
+			{
+				Sleep(1000);
+				level_++;
+
+				player_.reset();
+				playerRow_ = 7;
+
+				enemyRow_.setLevel(level_);
+
+				theScene_.drawBorder();
+				theScene_.drawLevelAndInfo(level_);
+				theScene_.drawPlayer(this->player_);
+				theScene_.showScene();
+				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+			}
+
+			if (!g_isPause)
+				tick_++;
+		}
+	}
+	void runSaveGame(unsigned int tick)
+	{
+		g_isPause = true;
+		std::string fileName = "";
+
+		theScene_.drawSaveFile(fileName);
+		theScene_.showScene();
+
+		while (true)
 		{
-			listVehicle_[i]->drawSprite();
-		}
+			if (_kbhit())
+			{
+				int tmp = _getch();
 
-		for (size_t i = 0; i < listAnimal_.size(); ++i)
+				// Backspace
+				if (tmp == '\b')
+				{
+					if (fileName.size() > 0)
+						fileName.pop_back();
+				}
+				// ESC -> return to game
+				else if (tmp == 27)
+				{
+					return;
+				}
+				// Enter -> Save file
+				else if (tmp == 13)
+				{
+					SaveFile(fileName, tick);
+					return;
+				}
+				else
+				{
+					if (fileName.length() <= 20)
+						fileName.push_back(tmp);
+				}
+
+				theScene_.drawSaveFile(fileName);
+				theScene_.showScene();
+			}
+		}
+	}
+	// Return current tick
+	unsigned int runLoadGame(const std::string folder)
+	{
+		g_isPause = true;
+
+		std::vector<std::string> listFile = getAllFilename(folder);
+		size_t nListFile = listFile.size();
+		int choose = 0;
+
+		theScene_.drawLoadFile(listFile, choose);
+		theScene_.showScene();
+
+		while (true)
 		{
-			listAnimal_[i]->drawSprite();
+			if (_kbhit())
+			{
+				int tmp = _getch();
+
+				if (tmp == 'w' && nListFile != 0)
+				{
+					if (choose > 0)
+						choose--;
+				}
+				else if (tmp == 's' && nListFile != 0)
+				{
+					// 1 for index and 1 for check
+					if (choose < nListFile - 1)
+						choose++;
+				}
+				// ENTER
+				else if (tmp == 13 && nListFile != 0)
+				{
+					unsigned int tick = LoadFile(folder, listFile[choose]);
+					return tick;
+				}
+				// ESC
+				else if (tmp == 27)
+				{
+					g_isPause = false;
+					return -1;
+				}
+
+				theScene_.drawLoadFile(listFile, choose);
+				theScene_.showScene();
+			}
 		}
-
-		player_.drawSprite();
-
-		snprintf((*(Buffer + 15) + 90), 14, "Level: %d", level_);
-		PrintBuffer();
 	}
-
-	void drawDeadMenu()
+	void runSetting()
 	{
-		/*
-			################################
-			#                              #
-			#  Press Y to continue playing #
-			#                              #
-			################################
-		*/
+		int choose = 0;
 
-		char DeadMenu[5][33] = {
-			{"################################"},
-			{"#                              #"},
-			{"#  Press Y to continue playing #"},
-			{"#                              #"},
-			{"################################"}
-		};
+		theScene_.drawSetting();
+		theScene_.showScene();
 
-		memcpy((*(Buffer + 1) + 30), (DeadMenu + 1), sizeof(DeadMenu[1]));
+		while (true)
+		{
+			int tmp = _getch();
+			// Enter
+			if (tmp == 'w')
+			{
+				if (choose > 0)
+					choose--;
+			}
+			else if (tmp == 's')
+			{
+				if (choose < 0)
+					choose++;
+			}
+			else if (tmp == 13)
+			{
+				if (choose == 0)
+				{
+					g_isHard = !g_isHard;
+				}
+			}
+			// ESC
+			else if (tmp == 27)
+			{
+				return;
+			}
 
-		for (int i = 0; i < 5; ++i)
-			memcpy((*(Buffer + 15 + i) + 30), (DeadMenu + i), sizeof(DeadMenu[i]));
-
-		PrintBuffer();
+			theScene_.drawSetting();
+			theScene_.showScene();
+		}
 	}
-
-	// ! Error, don't know why the dead not toggle
-	void setPlayerDead()
-	{
-		player_.setState(false);
-	}
-
-	Player getPlayer() const
-	{
-		return player_;
-	}
-
-	std::vector<Animal*> getAnimal()
-	{
-		return listAnimal_;
-	}
-
-	std::vector<Vehicle*> getVehicle()
-	{
-		return listVehicle_;
-	}
-
-	void levelUp()
-	{
-		level_++;
-	}
-
-	void resetLevel()
-	{
-		level_ = 0;
-	}
-
-	void resetGame()
-	{
-		for (size_t i = 0; i < listAnimal_.size(); ++i)
-			delete listAnimal_[i];
-		listAnimal_.resize(0);
-
-		for (size_t i = 0; i < listVehicle_.size(); ++i)
-			delete listVehicle_[i];
-		listVehicle_.resize(0);
-
-		g_isDeadMenu = false;
-	}
-
-	void exitGame(std::thread& thd)
-	{
-		g_isRunning = false;
-		ClearConsoleScreen();
-		thd.join();
-	}
-
-	void startGame()
-	{
-		g_isRunning = true;
-		player_.setState(true);
-
-		//Temporarily disabled for sprite testing
-		// if level
-		// 5 Car, 5 Truck
-		// Car
-		/*for (int i = 0; i < 5; ++i)
-			listVehicle_.push_back(new Car(35 + i * 2, 22));
-		for (int i = 0; i < 5; ++i)
-			listVehicle_.push_back(new Truck(35 + i * 2, 17));
-
-		for (int i = 0; i < 5; ++i)
-			listAnimal_.push_back(new Dinosaur(35 + i * 2, 12));
-		for (int i = 0; i < 5; ++i)
-			listAnimal_.push_back(new Bird(35 + i * 2, 7));*/
-
-		listVehicle_.push_back(new Car(39, 22, Buffer));
-		listVehicle_.push_back(new Truck(39, 17, Buffer));
-		listAnimal_.push_back(new Dinosaur(39, 12, Buffer));
-		listAnimal_.push_back(new Bird(39, 7, Buffer));
-
-		player_.move(39, 27, Buffer);
-	}
-
-	bool loadGame()
-	{
-		//std::fstream filename("SaveGame.txt", std::ios::in);
-		//std::vector<std::string> listName;
-		//std::vector<int> listLevel;
-		//std::string temp1;
-		//int temp2, cor_x = 15, cor_y = 5;
-
-		////Get the information from file text
-		//while (filename.eof() == false)
-		//{
-		//	filename >> temp2;
-		//	filename.ignore(80, ' ');
-		//	getline(filename, temp1);
-		//	listName.push_back(temp1);
-		//	listLevel.push_back(temp2);
-		//}
-		//filename.close();
-
-		////Print the load game
-		//char Load[20][50];
-		//for (int i = 0; i < 20; i++)
-		//	for (int j = 0; j < 50; j++)
-		//		if (i == 0 || i == 19)
-		//			Load[i][j] = '#';
-		//		else
-		//			if (j == 0 || j == 49)
-		//				Load[i][j] = '#';
-		//			else
-		//				Load[i][j] = ' ';
-		//for (int i = 0; i < 20; i++)
-		//{
-		//	GotoXY(cor_x, cor_y + i);
-		//	for (int j = 0; j < 50; j++)
-		//		std::cout << Load[i][j];
-		//	std::cout << std::endl;
-		//}
-		//GotoXY(cor_x, cor_y + 2); std::cout << "\t\t\t   LOAD GAME";
-		//GotoXY(cor_x, cor_y + 4); std::cout << "\t   The nickname in the game:";
-		//if (listName.size() == 0)
-		//{
-		//	GotoXY(cor_x, cor_y + 5);
-		//	std::cout << "\tDon't have any nickname saved to load!";
-		//	return false;
-		//}
-		//for (unsigned int i = 0; i < listName.size(); i++)
-		//{
-		//	GotoXY(cor_x, cor_y + 5 + i); 
-		//	std::cout << "\t\t" << listName[i] << " - Level: " << listLevel[i];
-		//}
-		//GotoXY(cor_x, cor_y + 17); std::cout << "\t Enter the nickname you choose: ";
-		//getline(std::cin, temp1);
-		//for (int i = 0; i < listName.size(); i++)
-		//	if (temp1 == listName[i])
-		//	{
-		//		level_ = listLevel[i];
-		//		return true;
-		//	}
-		//GotoXY(cor_x, cor_y + 18); std:: cout << "\t\tDon't have any nickname saved to load!";
-		//Sleep(5);
-		//return false;
-
-		char tempBuffer[30][120];
-		std::memcpy((char*)tempBuffer, (const char*)Buffer, 120 * 30);
-		for (int i = 5; i < 29; i++)
-			for (int j = 1; j < 78; j++)
-				Buffer[i][j] = 'M';
-		PrintBuffer();
-		std::memcpy((char*)Buffer, (const char*)tempBuffer, 120 * 30);
-		return true;
-	}
-
-	void saveGame()
-	{
-		//int cor_x = 15, cor_y = 5;
-		//std::string temp;
-		//char Load[20][50];
-
-		////Print the save game
-		//for (int i = 0; i < 20; i++)
-		//	for (int j = 0; j < 50; j++)
-		//		if (i == 0 || i == 19)
-		//			Load[i][j] = '#';
-		//		else
-		//			if (j == 0 || j == 49)
-		//				Load[i][j] = '#';
-		//			else
-		//				Load[i][j] = ' ';
-		//for (int i = 0; i < 20; i++)
-		//{
-		//	GotoXY(cor_x, cor_y + i);
-		//	for (int j = 0; j < 50; j++)
-		//		std::cout << Load[i][j];
-		//	std::cout << std::endl;
-		//}
-		//GotoXY(cor_x, cor_y + 2); std::cout << "\t\t\t   SAVE GAME";
-		//GotoXY(cor_x, cor_y + 10); std::cout << "\t Enter the nickname you save: ";
-		//getline(std::cin, temp);
-
-		////Add the new nickname into the file text
-		//std::fstream filename("SaveGame.txt", std::ios::app);
-		//filename << level_ << " " << temp << std::endl;;
-		//filename.close();
-
-		////Check and delete the old nickname (the number of nickname <= 10)
-		//std::vector<std::string> listName;
-		//std::vector<int> listLevel;
-		//std::string temp1;
-		//int temp2;
-
-		////Get the information from file text
-		//std::fstream in("SaveGame.txt", std::ios::in);
-		//while (in.eof() == false)
-		//{
-		//	in >> temp2;
-		//	in.ignore(80, ' ');
-		//	getline(in, temp1);
-		//	listName.push_back(temp1);
-		//	listLevel.push_back(temp2);
-		//}
-		//in.close();
-		//if (listName.size() > 10)
-		//{
-		//	for (int i = 0; i < listName.size() - 10; i++)
-		//	{
-		//		listName.erase(listName.begin());
-		//		listLevel.erase(listLevel.begin());
-		//	}
-		//}
-		////Print to the file text
-		//std::fstream out("SaveGame.txt", std::ios::out);
-		//for (int i = 0; i < listName.size(); i++)
-		//	out << listLevel[i] << " " << listName[i] << std::endl;
-		//out.close();
-	}
-
-	void pauseGame(HANDLE hd)
-	{
-
-	}
-
-	void resumeGame(HANDLE hd)
-	{
-
-	}
-
-	void updatePosPeople(char moveKey)
-	{
-		if (moveKey == 'W')
-			player_.Up();
-		else if (moveKey == 'A')
-			player_.Left();
-		else if (moveKey == 'S')
-			player_.Down();
-		else if (moveKey == 'D')
-			player_.Right();
-	}
-
-	void updatePosVehicle()
-	{
-
-	}
-
-	void updatePosAnimal()
-	{
-
-	}
-
-
 };

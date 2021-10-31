@@ -16,12 +16,15 @@ void GotoXY(SHORT x, SHORT y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void SetTextColor(SHORT color)
+void setConsoleColor(unsigned char color)
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	SetConsoleTextAttribute(hOut, color);
+
 }
 
-void GetWindowBufferSize(SHORT& row, SHORT& col)
+void GetWindowBufferSize(int& row, int& col)
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
@@ -59,4 +62,11 @@ void ClearConsoleScreen()
 	FillConsoleOutputCharacter(hOut, TEXT(' '), length, topLeft, &written);
 	FillConsoleOutputAttribute(hOut, csbi.wAttributes, length, topLeft, &written);
 	SetConsoleCursorPosition(hOut, topLeft);
+}
+
+bool dir_exists(std::string const& dir_path)
+{
+	DWORD const f_attrib = GetFileAttributesA(dir_path.c_str());
+	return f_attrib != INVALID_FILE_ATTRIBUTES &&
+		(f_attrib & FILE_ATTRIBUTE_DIRECTORY);
 }

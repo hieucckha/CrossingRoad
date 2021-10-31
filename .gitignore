@@ -2,7 +2,9 @@
 Debug/
 .vs/
 **/Debug/
+x64/
+data/
+Testing/
+TestingGame/
 
 # File
-*.vcxproj.filters
-*.vcxproj.user

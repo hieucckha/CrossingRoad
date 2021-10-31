@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SourceCode">
+      <UniqueIdentifier>{4ee4c348-aa23-4ff5-beda-c3b71958c0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\GameMain">
+      <UniqueIdentifier>{2f09d492-ed7f-4a02-acb3-166bbe846371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\SceneAndPoint2D">
+      <UniqueIdentifier>{bea993fa-cc4d-4d3f-8ae0-5333bed1e87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\WindowConsole">
+      <UniqueIdentifier>{21f66264-b2c7-4f81-ae31-8779984524db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\ConstantAndDefine">
+      <UniqueIdentifier>{ba79ab2c-a3f2-4c37-98f6-444cab7fcc85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Row">
+      <UniqueIdentifier>{b7f431a0-2654-4421-9946-e6b0471e96ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Row\Player">
+      <UniqueIdentifier>{ee7ccc27-9ab4-492e-b64a-e684298400bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Row\EnemyRow">
+      <UniqueIdentifier>{ce51f1d5-00fd-4066-ab47-be193d577298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Row\EnemyRow\OneRow">
+      <UniqueIdentifier>{8e38812b-8f64-4c1c-a650-29a55654f52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SourceCode\Row\EnemyRow\OneRow\EntityInRow">
+      <UniqueIdentifier>{b58d5353-601d-43c4-85e4-e59d174fa3f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="OneRow.cpp">
+      <Filter>SourceCode\Row\EnemyRow\OneRow</Filter>
+    </ClCompile>
+    <ClCompile Include="Animal.cpp">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClCompile>
+    <ClCompile Include="Vehicle.cpp">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>SourceCode\GameMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Pixel.cpp">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2D.cpp">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClCompile>
+    <ClCompile Include="SpritesModel.cpp">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Helper.cpp">
+      <Filter>SourceCode\WindowConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>SourceCode</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>SourceCode\Row\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyRow.cpp">
+      <Filter>SourceCode\Row\EnemyRow</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OneRow.h">
+      <Filter>SourceCode\Row\EnemyRow\OneRow</Filter>
+    </ClInclude>
+    <ClInclude Include="Animal.h">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClInclude>
+    <ClInclude Include="Vehicle.h">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>SourceCode\GameMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Pixel.h">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2D.h">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClInclude>
+    <ClInclude Include="SpritesModel.h">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Helper.h">
+      <Filter>SourceCode\WindowConsole</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>SourceCode\Row\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>SourceCode\ConstantAndDefine</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>SourceCode\SceneAndPoint2D</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyRow.h">
+      <Filter>SourceCode\Row\EnemyRow</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>SourceCode\Row\EnemyRow\OneRow\EntityInRow</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
