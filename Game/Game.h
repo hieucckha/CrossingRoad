@@ -225,12 +225,12 @@ public:
 
 	void pauseGame(HANDLE hd)
 	{
-
+		SuspendThread(hd);
 	}
 
 	void resumeGame(HANDLE hd)
 	{
-
+		ResumeThread(hd);
 	}
 
 	void updatePosPeople(char moveKey)
