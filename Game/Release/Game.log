@@ -1,0 +1,18 @@
+﻿  Animal.cpp
+  Enemy.cpp
+  EnemyRow.cpp
+  Game.cpp
+  main.cpp
+  Pixel.cpp
+  Player.cpp
+  Point2D.cpp
+  OneRow.cpp
+  Scene.cpp
+  SpritesModel.cpp
+  Vehicle.cpp
+  Win32Helper.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 525 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Game.vcxproj -> C:\Users\Administrator\OneDrive - VNU-HCMUS\Workspace\CPlusPlus\School\OOP\RoadCrossing\Release\Game.exe

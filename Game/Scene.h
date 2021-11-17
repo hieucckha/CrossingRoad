@@ -374,7 +374,7 @@ public:
 				theScene_[17][50 + i].background_ = BACKGROUND_BLUE;
 		}
 
-		cusStrcpyNInMap(50, 19, "- Press <Enter> to toggle", 23);
+		cusStrcpyNInMap(50, 19, "- Press <Enter> to toggle", 25);
 		cusStrcpyNInMap(50, 20, "- Press <ESC> to go back", 24);
 	}
 	void showScene()
