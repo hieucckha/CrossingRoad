@@ -1,130 +1,115 @@
 #pragma once
 #include "Vehicle.h"
 #include "Animal.h"
+#include "Entity.h"
 
 #include <vector>
 
-class Player
+class Player : public Entity
 {
 private:
-	int x_, y_;
-	bool state_;
-	bufferPtr Buffer_;
-
+	bool isDead;
+	static Sprite* playerSprt;
 public:
-
 	// Maybe change this the default location
-	Player() : x_(39), y_(28), state_(true), Buffer_(nullptr)
+	Player()
 	{
-
+		coord.X = 39;
+		coord.Y = 27;
+		isDead = false;
+		recalBound();
 	}
 
-	const char sprite[3][6] = {
-		{" _0_ "},
-		{"/\\_/\\"},
-		{" / \\ "}
-	};
-
-	void move(int x, int y, bufferPtr Buffer)
+	~Player()
 	{
-		x_ = x;
-		y_ = y;
-		Buffer_ = Buffer;
+		delete playerSprt;
+	}
+
+	void move(int x, int y)
+	{
+		coord.X = x;
+		coord.Y = y;
 	}
 
 	void setState(bool state)
 	{
-		state_ = state;
+		isDead = state;
 	}
 
 	int getX() const
 	{
-		return x_;
+		return coord.X;
 	}
 	int getY() const
 	{
-		return y_;
+		return coord.Y;
 	}
 
 	void Up()
 	{
-		if (y_ >= 0)
-			if (y_ == 27)
-				y_ -= 4;
+		if (coord.Y >= 0) {
+			if (coord.Y == 27)
+				coord.Y -= 4;
 			else
-				y_ -= 5;
+				coord.Y -= 5;
+		}
 	}
 	void Left()
 	{
-		if (x_ > 3)
-			x_--;
+		if (coord.X > 3) {
+			coord.X--;
+		}
 	}
 	void Down()
 	{
-		if (y_ < 28)
-			if (y_ == 23)
-				y_ += 4;
-			else if (y_ != 27)
-				y_ += 5;
+		if (coord.Y < 28) {
+			if (coord.Y == 23)
+				coord.Y += 4;
+			else if (coord.Y != 27)
+				coord.Y += 5;
+		}
 	}
 	void Right()
 	{
-		if (x_ < 76)
-			x_++;
+		if (coord.X < 76) {
+			coord.X++;
+		}
 	}
 
 	bool isImpact(std::vector<Animal*> listAnimal) const
 	{
-		for (size_t i = 0; i < listAnimal.size(); ++i)
-		{
-			if (listAnimal[i]->getX() == this->x_ && listAnimal[i]->getY() == this->y_)
-				return true;
-		}
-
-		return false;
+			//Move to Game
 	}
 
 	bool isImpact(std::vector<Vehicle*> listVehicle) const
 	{
-		for (size_t i = 0; i < listVehicle.size(); ++i)
-		{
-			if (listVehicle[i]->getX() == this->x_ && listVehicle[i]->getY() == this->y_)
-				return true;
-		}
-
-		return false;
+			//Move to Game
 	}
 
-	bool isFinish() const
+	bool isAtFinishLine() const
 	{
-		if (y_ <= 3)
-		{
-			return true;
-		}
-
-		return false;
+		return (coord.Y <= 5) ? true : false;
 	}
 
-	bool isDead() const
+	bool isPlayerDead() const
 	{
-		return !state_;
+		return !isDead;
 	}
 
-	void drawSprite()
+	Sprite getSprite() const override
 	{
-		/*
-		 _0_
-		/\_/\
-		 / \
-		*/
-
-		for (int Y = y_ - 1, j = 0; Y <= y_ + 1; ++Y, ++j) {
-			for (int X = x_ - 2, i = 0; X <= x_ + 2; ++X, ++i) {
-				Buffer_[Y][X] = sprite[j][i];
-			}
-		}
+		return *playerSprt;
 	}
 
+	SHORT getSpriteHeight() const override
+	{
+		return playerSprt->getHeight();
+	}
+
+	SHORT getSpriteWidth() const override
+	{
+		return playerSprt->getWidth();
+	}
 };
 
 
