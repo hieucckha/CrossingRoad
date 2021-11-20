@@ -1,98 +1,78 @@
-#pragma once
+#ifndef _VEHICLE
+#define _VEHICLE
 
-typedef char(*bufferPtr)[120];
+#include "Entity.h"
 
-class Vehicle
+class Vehicle : public Entity
 {
-private:
-	int x_, y_;
-	bufferPtr Buffer_;
-
 public:
-	/// <summary>
-	/// Move the coordinate of Vehicle to x and y, save to Buffer
-	/// </summary>
-	/// <param name="x">: Coordinate x</param>
-	/// <param name="y">: Coordinate y</param>
-	/// <param name="Buffer">: Buffer pointer</param>
-	virtual void move(int x, int y, bufferPtr Buffer)
+	virtual void move(int x, int y)
 	{
-		x_ = x;
-		y_ = y;
-		Buffer_ = Buffer;
-	}
-
-	int getX() const
-	{
-		return x_;
-	}
-
-	int getY() const
-	{
-		return y_;
-	}
-
-	bufferPtr getBuffer()
-	{
-		return Buffer_;
-	}
-
-	void virtual drawSprite()
-	{
-		return;
+		coord.X = x;
+		coord.Y = y;;
 	}
 };
 
 class Car : public Vehicle
 {
+private:
+	static Sprite* carSprt;
 public:
-	const char sprite[4][16] = {
-	{"     _____    "},
-	{" ___/__|__\\___ "}, //pivot " ___/__|__\\___ "
-	{"|      |     `|"},  //              ^
-	{"`(o)------(o)'"},
-	};
-
-	Car(int x, int y, bufferPtr Buffer = nullptr)
+	Car(int x, int y)
 	{
-		move(x, y, Buffer);
+		move(x, y);
+		recalBound();
 	}
 
-	void drawSprite() override
+	~Car()
 	{
-		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
-			for (int X = this->getX() - 7, i = 0; X <= this->getX() + 7; ++X, ++i) {
-				if (X <= 0 || X > 78)
-					continue;
-				this->getBuffer()[Y][X] = sprite[j][i];
-			}
-		}
+		delete carSprt;
+	}
+
+	Sprite getSprite() const override
+	{
+		return *carSprt;
+	}
+	SHORT getSpriteHeight() const override
+	{
+		return carSprt->getHeight();
+	}
+
+	SHORT getSpriteWidth() const override
+	{
+		return carSprt->getWidth();
 	}
 };
 
 class Truck : public Vehicle
 {
+private:
+	static Sprite* truckSprt;
 public:
-	const char sprite[4][24] = {
-	{" ____________________  "},
-	{"|___|_____|____|_|___\\ "}, //pivot "|___|_____|____|_|___\\ "
-	{"|              | |    \\"}, //                 ^
-	{"`--(o)(o)--------(o)--'"},
-	};
-
-	Truck(int x, int y, bufferPtr Buffer = nullptr)
+	Truck(int x, int y)
 	{
-		move(x, y, Buffer);
+		move(x, y);
+		recalBound();
 	}
 
-	void drawSprite() override
+	~Truck()
 	{
-		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
-			for (int X = this->getX() - 10, i = 0; X <= this->getX() + 12; ++X, ++i) {
-				if (X <= 0 || X > 78)
-					continue;
-				this->getBuffer()[Y][X] = sprite[j][i];
-			}
-		}
+		delete truckSprt;
+	}
+
+	Sprite getSprite() const override
+	{
+		return *truckSprt;
+	}
+	SHORT getSpriteHeight() const override
+	{
+		return truckSprt->getHeight();
+	}
+
+	SHORT getSpriteWidth() const override
+	{
+		return truckSprt->getWidth();
 	}
 };
+
+#endif // _VEHICLE

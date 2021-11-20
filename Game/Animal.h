@@ -1,97 +1,77 @@
-#pragma once
+#ifndef _ANIMAL
+#define _ANIMAL
+#include "Entity.h"
+#include "Sprite.h"
 
-typedef char(*bufferPtr)[120];
-
-class Animal
+class Animal : public Entity
 {
-private:
-	int x_, y_;
-	char(*Buffer_)[120];
-
 public:
-	/// <summary>
-	/// Move the coordinate of Animal to x and y, save to Buffer
-	/// </summary>
-	/// <param name="x">: Coordinate x</param>
-	/// <param name="y">: Coordinate y</param>
-	/// <param name="Buffer">: Buffer pointer</param>
-	virtual void move(int x, int y, bufferPtr Buffer)
+	virtual void move(int x, int y)
 	{
-		x_ = x;
-		y_ = y;
-		Buffer_ = Buffer;
-	}
-
-	int getX() const
-	{
-		return x_;
-	}
-
-	int getY() const
-	{
-		return y_;
-	}
-
-	bufferPtr getBuffer()
-	{
-		return Buffer_;
-	}
-
-	void virtual drawSprite()
-	{
-		return;
+		coord.X = x;
+		coord.Y = y;
 	}
 };
 
 class Bird : public Animal
 {
+private:
+	static Sprite* birdSprt;
 public:
-	const char sprite[4][12] = {
-		{"     __   "},
-		{"    /  7  "}, //pivot "    /  7  "
-		{"<()/____7 "}, //           ^
-		{" '------\"\""}
-	};
-
-	Bird(int x, int y, bufferPtr Buffer = nullptr)
+	Bird(int x, int y)
 	{
-		move(x, y, Buffer);
+		move(x, y);
+		recalBound();
 	}
 
-	void drawSprite() override
+	~Bird()
 	{
-		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
-			for (int X = this->getX() - 4, i = 0; X <= this->getX() + 5; ++X, ++i) {
-				if (X <= 0 || X > 78)
-					continue;
-				this->getBuffer()[Y][X] = sprite[j][i];
-			}
-		}
+		delete birdSprt;
+	}
+
+	Sprite getSprite() const override
+	{
+		return *birdSprt;
+	}
+	SHORT getSpriteHeight() const override
+	{
+		return birdSprt->getHeight();
+	}
+
+	SHORT getSpriteWidth() const override
+	{
+		return birdSprt->getWidth();
 	}
 };
 
 class Dinosaur : public Animal
 {
+private:
+	static Sprite* dinoSprt;
 public:
-	const char sprite[4][14] = {
-		{" __          "},
-		{"(_ \\_/\\/\\__  "}, //pivot "(_ \\_/\\/\\__  "
-		{"  \\   _    \\ "},  //             ^
-		{"   |_| |_|'-\\"}
-	};
-	Dinosaur(int x, int y, bufferPtr Buffer = nullptr)
+	Dinosaur(int x, int y)
 	{
-		move(x, y, Buffer);
+		move(x, y);
+		recalBound();
 	}
 
-	void drawSprite() override
+	~Dinosaur()
 	{
-		for (int Y = this->getY() - 1, j = 0; Y <= this->getY() + 2; ++Y, ++j) {
-			for (int X = this->getX() - 5, i = 0; X <= this->getX() + 7; ++X, ++i) {
-				if (X <= 0 || X > 78)
-					continue;
-				this->getBuffer()[Y][X] = sprite[j][i];
-			}
-		}
+		delete dinoSprt;
+	}
+
+	Sprite getSprite() const override
+	{
+		return *dinoSprt;
+	}
+	SHORT getSpriteHeight() const override
+	{
+		return dinoSprt->getHeight();
+	}
+
+	SHORT getSpriteWidth() const override
+	{
+		return dinoSprt->getWidth();
 	}
 };
+#endif // _ANIMAL
