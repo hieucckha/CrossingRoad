@@ -25,10 +25,12 @@ private:
 	int level_;
 	Player player_;
 
+	//!!!!DEBUG_ONLY!!!!
 	Bird* testBird;
 	Dinosaur* testDino;
 	Car* testCar;
 	Truck* testTruck;
+	//!!!!END_OF_DEBUG!!!!
 
 	Scene gameScene;
 	std::vector<Row*> row;
@@ -37,7 +39,7 @@ public:
 	{
 		level_ = 0;
 
-		testBird = new Bird(39, 7);
+		testBird = new Bird(0, 7);
 		testDino = new Dinosaur(39, 12);
 		testCar = new Car(39, 17);
 		testTruck = new Truck(39, 22);
@@ -69,12 +71,14 @@ public:
 		gameScene.PrintBuffer();
 	}
 
+	//Remember to pause the game
 	void drawDeadMenu()
 	{
-		//Redo, Use from scene
+		gameScene.drawDeadMenu();
+		gameScene.PrintBuffer();
 	}
 	
-	// ! Error, don't know why the dead not toggle
+	//!!!Error, don't know why the dead not toggle!!!
 	void setPlayerDead()
 	{
 		player_.setState(false);
@@ -158,6 +162,5 @@ public:
 	{
 
 	}
-
 
 };

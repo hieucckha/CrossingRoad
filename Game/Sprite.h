@@ -8,10 +8,12 @@
 class Sprite
 {
 private:
+	int height, width;
 	std::vector<std::vector<char>> sprt;
 public:
 	Sprite()
 	{
+		height = width = 0;
 	}
 
 	Sprite(const char* dir)
@@ -20,16 +22,16 @@ public:
 		std::fstream inputSprite(dir, std::ios::in);
 		if (inputSprite.is_open())
 		{
-			int len, wid;
-			inputSprite >> len;
+			int height, width;
+			inputSprite >> height;
 			inputSprite.ignore();
-			inputSprite >> wid;
+			inputSprite >> width;
 			inputSprite.ignore();
 
-			for (int i = 0; i < len; ++i)
+			for (int i = 0; i < height; ++i)
 			{
 				std::vector<char> temp;
-				for (int j = 0; j < wid; ++j)
+				for (int j = 0; j < width; ++j)
 				{
 					char chr;
 					inputSprite.get(chr);
@@ -41,6 +43,9 @@ public:
 
 			inputSprite.close();
 		}
+
+		height = sprt.size();
+		width = sprt[0].size();
 	}
 	~Sprite()
 	{
@@ -58,16 +63,16 @@ public:
 		std::fstream inputSprite(dir, std::ios::in);
 		if (inputSprite.is_open())
 		{
-			int len, wid;
-			inputSprite >> len;
+			int height, width;
+			inputSprite >> height;
 			inputSprite.ignore();
-			inputSprite >> wid;
+			inputSprite >> width;
 			inputSprite.ignore();
 
-			for (int i = 0; i < len; ++i)
+			for (int i = 0; i < height; ++i)
 			{
 				std::vector<char> temp;
-				for (int j = 0; j < wid; ++j)
+				for (int j = 0; j < width; ++j)
 				{
 					char chr;
 					inputSprite.get(chr);
@@ -83,12 +88,12 @@ public:
 
 	SHORT getHeight()
 	{
-		return sprt.size();
+		return height;
 	}
 
 	SHORT getWidth()
 	{
-		return sprt[0].size();
+		return width;
 	}
 };
 

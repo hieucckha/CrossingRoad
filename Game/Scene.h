@@ -9,6 +9,7 @@
 class Scene
 {
 private:
+	int playCol = 30, playRow = 80;
 	char PrevBuffer[30][120];
 	char Buffer[30][120];
 public:
@@ -84,29 +85,37 @@ public:
 	{
 		for(int y = 0; y < obj.getSpriteHeight(); ++y)
 			for (int x = 0; x < obj.getSpriteWidth(); ++x) {
-				Buffer[y + obj.getY() - obj.getBound(0)][x + obj.getX() - obj.getBound(3)] = obj.getSprite()[y][x];
+				if((y + obj.getY() - obj.getBound(0) > 0 && y + obj.getY() - obj.getBound(0) < playCol - 1) && (x + obj.getX() - obj.getBound(3) > 0 && x + obj.getX() - obj.getBound(3) < playRow - 1))
+					Buffer[y + obj.getY() - obj.getBound(0)][x + obj.getX() - obj.getBound(3)] = obj.getSprite()[y][x];
 			}
 	}
 
 	void drawDeadMenu()
 	{
-		for (int i = 0; i < 5; ++i)
-			memcpy((char*)(Buffer[i] + 24), (char*)(DeadMenu), sizeof(DeadMenu[0]));
+		for (int i = 0; i < 7; ++i)
+			memcpy((char*)(Buffer[i + 12] + 24), (char*)(DeadMenu[i]), strlen(DeadMenu[0]));
 	}
 
+	//!!!NOT FINISH!!!
+	//Waiting for loading
 	void drawLoadMenu()
 	{
-
+		for (int i = 0; i < 5; ++i)
+			memcpy((char*)(Buffer[i + 12] + 20), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
 	}
 
+	//!!!NOT FINISH!!!
+	//Waiting for saving
 	void drawSaveMenu()
 	{
-
+		for (int i = 0; i < 5; ++i)
+			memcpy((char*)(Buffer[i + 13] + 20), (char*)(SaveMenu[i]), strlen(SaveMenu[0]));
 	}
 
 	void drawPauseMenu()
 	{
-
+		for (int i = 0; i < 5; ++i)
+			memcpy((char*)(Buffer[i + 13] + 20), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
 	}
 
 	const static char DeadMenu[7][33];
