@@ -1,8 +1,11 @@
 # Folder
-Debug/
 .vs/
+Debug/
+x64/
 **/Debug/
+**/Data/
+**/x64/
+Testing/
+TesingGame/
 
 # File
-*.vcxproj.filters
-*.vcxproj.user
