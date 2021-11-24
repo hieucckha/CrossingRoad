@@ -13,8 +13,14 @@ void SubThread()
 	{
 		if (g_isDeadMenu)
 		{
+			//!!!!DEBUG_ONLY!!!!
 			game->drawDeadMenu();
+			std::cin.ignore();	//Should be pause and let the player choose
+			std::cin;			//instead of cin
+			g_isDeadMenu = false;
+			game->resetGame();
 			continue;
+			//!!!!END_OF_DEBUG!!!!
 		}
 
 		if (!game->getPlayer().isPlayerDead())
@@ -103,6 +109,12 @@ void main()
 				game->exitGame(t1);
 				return;
 			}
+		}
+		if (tmp == 'O')
+		{
+			game->setPlayerDead();
+			game->resetLevel();
+			g_isDeadMenu = true;
 		}
 	}
 }
