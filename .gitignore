@@ -1,6 +1,6 @@
 # Folder
-Debug/
 .vs/
+Debug/
 **/Debug/
 **/Release/
 x64/

@@ -1,48 +1,36 @@
 # Crossing Road
 
-## Cài đặt
+## Logic game
 
-- Clone về thôi có file `.sln` rồi bật là tự lên thôi
-- Môi trường thì dùng `Visual Studio 2019`
-- Muốn sướng hơn thì dùng `Visual Assist X` để đời bớt khổ hơn (cài vào thì chạy nặng hơn tí)(Có thể nói t để lấy bản crack)
+- Chia thành nhiều module:
 
-## Vài điều lưu ý
+  - Các enemy như Bird, Dinosaur, Car, Truck được kế thừa từ base class Enemy
+  - Chia thành mỗi hàng độc lập với nhau, có hàm chứa những hàng đó lại, ban đâu thì `OneRow` -> `EmemyRow` (vector chứa các `OneRow`)
+  - Sử dụng double buffer, trong class `Scene` được tạo từ class `Pixel` chứa thông tin nội dùng, foreground, background
+  - Class Game sẽ chứa tất cả những thứ trên, có 3 thằng chính:
+    - Player: Điều kiển về player
+    - EnemyRow: Điều kiển về Enemy trên mỗi row
+    - Scene: Vẽ những thứ trên lên console
+  - Hàm va chạm sẽ được check bởi `Player`, khi mà player di chuyển hoặc khi mà trên hàng mà player đang đứng các xe di chuyển
 
-- `Project Game` là chính, `Project Testing` và `Project TestingGame` để test code và mấy design pattern (chắc khi nào bỏ 2 thằng đó để khỏi bị conflict) 
-- Mới phần sườn, còn rất nhiều thứ cần làm trong `TODO`
-- Chú ý ghi chú cẩn thận vì là project team, không phải cá nhân, tiện hiểu code (Chắc khi nào sẽ thảo luận về phần `Coding Convention` và phần git sau)
-- Nhớ commit ghi rõ làm cái gì là được để git log đọc cho dễ :D
+## TODO
 
-- Chắc khi nào học thêm cái `branch` với `pull request` lại nữa
-- À mà đừng commit nhiều lắm, chắc phải học thêm cái `rebase`
-
-- Have Fun Coding :3 
-
-## Về thuật toán
-
-- Chúng ta có 2 thread là `main` và `SubThread`(Chắc phải đổi tên lại)
- - Thread main để bắt Input Key và 
- - Thread SubThread để vẽ game là chính
-
-- Class chính là Game
- - Game sẽ gồm 2 `Vector Animal và Vehicle` chứa thông tin về vị trí của tụi nó
- - Một thằng `player` để điều khiển
- - Hai cái `PrevBuffer` và `Buffer` để có thể vẽ lên console (Kỹ thuật là double buffering) tránh trường hợp bọn nó vẽ lại nhiều quá dẫn đến bị sọc chớp chớp?
- - Một biến `level` để lưu level thôi
-
-- Class phụ là Player và mấy cái xe + động vật
-
-- File `Win32Helper` chứa hàm về Win32 liên quan đến `Console` và mấy thứ như `Màu, GotoXY` và `ClearConsoleScreen`(đừng dùng system("cls") vì nó rất chậm) 
-
-## TODO:
-
-- [X] Dead & Finish level
-- [X] Hiện sprite
-- [ ] Gen level (Same lane but more Car and Animal and faster?)(Either that or the thing can teleport)
-- [ ] Menu
-- [ ] Pause
-- [ ] Save file/Load file
-- [ ] Tạm dừng các xe
-- [ ] Xử lý hiệu ứng
-- [ ] Giao diện trò chơi
-- [ ] Thêm nhạc
+- [x] Thêm chiều ngược lại của các hình
+- [x] Đưa các hình vẽ vào code
+- [x] Border cho khung game
+- [x] Viết lại cách render hình, cho tất cả qua buffer rồi vẽ buffer
+- [x] Thêm thông số hàng, vị trí hàng khi người chơi đang đứng -> Khi mà check va chạm chỉ cần check trong cái hàng đó thôi
+- [x] Thêm row, thêm entity chạy qua lại
+- [x] Viết cách gen của mỗi level
+  - [x] Speed ->
+  - [x] Số lượng enemy của mỗi hàng (hay tổng số enemy trên map rồi chia đều cho các row or random)
+- [x] Viết cách gen entity của mỗi hàng
+  - [x] Gen Random|Linear -> Random thì ngầu nhiên trên màn hình và linear thì sẽ xuất hiện từ trong border đi ra
+- [x] Thêm thôgn tin level, hướng dẫn di chuyển
+- [x] Traffic Light
+- [x] Viết lại hàm check va chạm
+- [x] Pause/Resume Game
+- [x] Thêm setting vào trong menu
+- [ ] Hiệu ứng va chạm
+- [ ] Chỉnh lại speed và thời gian chờ phù hợp khi bật qua `Mode Release`
+- [ ] Chỉnh lại chữ trong trong menu chính cho đẹp hơn
