@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <conio.h>
+#include <ctime>
 
 char MOVING;
 Game* game;
@@ -27,8 +28,7 @@ void SubThread()
 			game->updatePosPeople(MOVING);
 
 		MOVING = ' ';
-		/*game->updatePosAnimal();
-		game->updatePosVehicle();*/
+		game->updateRows();
 		game->drawGame();
 
 		// Dead AAAAAAAAAA

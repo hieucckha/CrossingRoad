@@ -6,11 +6,11 @@
 class Animal : public Entity
 {
 public:
-	virtual void move(int x, int y)
+	/*virtual void move(int x, int y)
 	{
 		coord.X = x;
 		coord.Y = y;
-	}
+	}*/
 };
 
 class Bird : public Animal

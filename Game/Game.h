@@ -26,10 +26,10 @@ private:
 	Player player_;
 
 	//!!!!DEBUG_ONLY!!!!
-	Bird* testBird;
-	Dinosaur* testDino;
-	Car* testCar;
-	Truck* testTruck;
+	//Bird* testBird;
+	//Dinosaur* testDino;
+	//Car* testCar;
+	//Truck* testTruck;
 	//!!!!END_OF_DEBUG!!!!
 
 	Scene gameScene;
@@ -39,16 +39,20 @@ public:
 	{
 		level_ = 0;
 
-		testBird = new Bird(0, 7);
-		testDino = new Dinosaur(39, 12);
-		testCar = new Car(39, 17);
-		testTruck = new Truck(39, 22);
+		//testBird = new Bird(0, 7);
+		//testDino = new Dinosaur(39, 12);
+		//testCar = new Car(39, 17);
+		//testTruck = new Truck(39, 22);
 	}
 
 	~Game()
 	{
 	}
 
+	int getLevel() const
+	{
+		return level_;
+	}
 	/// <summary>
 	/// Display generated Buffer to the monitor
 	/// </summary>
@@ -63,10 +67,14 @@ public:
 	void drawGame()
 	{
 		gameScene.drawScene(level_);
-		gameScene.drawEntity(*testBird);
-		gameScene.drawEntity(*testDino);
-		gameScene.drawEntity(*testCar);
-		gameScene.drawEntity(*testTruck);
+		//gameScene.drawEntity(*testBird);
+		//gameScene.drawEntity(*testDino);
+		//gameScene.drawEntity(*testCar);
+		//gameScene.drawEntity(*testTruck);
+
+		for (auto x : row)
+			gameScene.drawOneRow(*x);
+
 		gameScene.drawEntity(player_);
 		gameScene.PrintBuffer();
 	}
@@ -153,14 +161,23 @@ public:
 			player_.Right();
 	}
 
-	void updatePosVehicle()
+	void updateRows()
 	{
+		srand((unsigned)time(NULL));
+		// Initialize
+		if (row.empty())
+		{
+			row.push_back(new Row(7));
+			row.push_back(new Row(12));
+			row.push_back(new Row(17));
+			row.push_back(new Row(22));
+		}
 
+		for (auto& x : row)
+		{
+			x->setTimeatLevel(level_);
+			x->append();
+			x->move();
+		}
 	}
-
-	void updatePosAnimal()
-	{
-
-	}
-
 };

@@ -38,6 +38,12 @@ public:
 		return coord.Y;
 	}
 
+	virtual void move(int x, int y)
+	{
+		coord.X = x;
+		coord.Y = y;
+	}
+
 	virtual SHORT getSpriteHeight() const
 	{
 		return sprt->getHeight();

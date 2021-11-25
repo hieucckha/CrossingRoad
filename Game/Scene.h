@@ -4,23 +4,35 @@
 #include <iostream>
 #include <vector>
 #include "Row.h"
+#include "Pixel.h"
 #include "Win32Helper.h"
 
 class Scene
 {
 private:
-	int playCol = 30, playRow = 80;
-	char PrevBuffer[30][120];
-	char Buffer[30][120];
+	int playCol = 30, playRow = 110;
+	char PrevBuffer[30][150];
+	char Buffer[30][150];
+
 public:
 	Scene()
 	{
-		memset(Buffer, (int)' ', 120 * 30);
-		memset(PrevBuffer, (int)' ', 120 * 30);
+		memset(Buffer, (int)' ', 150 * 30);
+		memset(PrevBuffer, (int)' ', 150 * 30);
 	}
 
 	~Scene()
 	{
+	}
+
+	int getCol() const
+	{
+		return playCol;
+	}
+
+	int getRow() const
+	{
+		return playRow;
 	}
 
 	/// <summary>
@@ -30,7 +42,7 @@ public:
 	{
 		for (SHORT row = 0; row < 30; ++row)
 		{
-			for (SHORT col = 0; col < 120; ++col)
+			for (SHORT col = 0; col < 150; ++col)
 			{
 				if (Buffer[row][col] == PrevBuffer[row][col])
 					continue;
@@ -41,7 +53,7 @@ public:
 		}
 
 		std::cout.flush();
-		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 120 * 30);
+		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 150 * 30);
 	}
 
 	/// <summary>
@@ -50,7 +62,7 @@ public:
 	void drawScene(int level_)
 	{
 		//ClearConsoleScreen();
-		int row = 30, col = 120;
+		int row = 30, col = 150;
 
 		for (int i = 0; i < row; ++i)
 			Buffer[i][col - 1] = '\n';
@@ -88,6 +100,14 @@ public:
 				if((y + obj.getY() - obj.getBound(0) > 0 && y + obj.getY() - obj.getBound(0) < playCol - 1) && (x + obj.getX() - obj.getBound(3) > 0 && x + obj.getX() - obj.getBound(3) < playRow - 1))
 					Buffer[y + obj.getY() - obj.getBound(0)][x + obj.getX() - obj.getBound(3)] = obj.getSprite()[y][x];
 			}
+	}
+
+	void drawOneRow(const Row& obj) // Draw rows here
+	{
+		// Task to do: draw traffic light (thank you Hao <3)
+
+		for (auto& enemy : obj.GetList())
+			drawEntity(*enemy);
 	}
 
 	void drawDeadMenu()

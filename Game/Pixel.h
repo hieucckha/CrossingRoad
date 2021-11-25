@@ -15,6 +15,11 @@ public:
 		text_ = Color_White;
 		background_ = Color_Black;
 	}
+
+	void SetBG(unsigned char color)
+	{
+		background_ = color;
+	}
 };
 
 class Scene

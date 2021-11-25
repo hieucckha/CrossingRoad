@@ -6,11 +6,11 @@
 class Vehicle : public Entity
 {
 public:
-	virtual void move(int x, int y)
+	/*virtual void move(int x, int y)
 	{
 		coord.X = x;
 		coord.Y = y;;
-	}
+	}*/
 };
 
 class Car : public Vehicle
