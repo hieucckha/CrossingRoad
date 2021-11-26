@@ -40,9 +40,9 @@
 - [X] Hiện sprite
 - [ ] Gen level (Same lane but more Car and Animal and faster?)(Either that or the thing can teleport)
 - [ ] Menu
-- [ ] Pause
+- [X] Pause
 - [ ] Save file/Load file
-- [ ] Tạm dừng các xe
+- [X] Tạm dừng các xe
 - [ ] Xử lý hiệu ứng
 - [ ] Giao diện trò chơi
 - [ ] Thêm nhạc
