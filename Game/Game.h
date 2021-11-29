@@ -49,6 +49,11 @@ public:
 	{
 	}
 
+	std::vector<Row*>& getRow()
+	{
+		return row;
+	}
+
 	int getLevel() const
 	{
 		return level_;
@@ -85,7 +90,7 @@ public:
 		gameScene.drawDeadMenu();
 		gameScene.PrintBuffer();
 	}
-	
+
 	//!!!Error, don't know why the dead not toggle!!!
 	void setPlayerDead()
 	{
@@ -94,7 +99,7 @@ public:
 
 	const Player& getPlayer() const
 	{
-		return player_	;
+		return player_;
 	}
 
 	void levelUp()

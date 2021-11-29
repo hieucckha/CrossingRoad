@@ -32,13 +32,13 @@ void SubThread()
 		game->drawGame();
 
 		// Dead AAAAAAAAAA
-		//if (game->getPlayer().isImpact(game->getVehicle()) || game->getPlayer().isImpact(game->getAnimal()))
-		//{
-		//	// Don't know why the state not set to false, scope
-		//	game->setPlayerDead();
-		//	game->resetLevel();
-		//	g_isDeadMenu = true;
-		//}
+		if (game->getPlayer().isImpact(game->getRow()))
+		{
+			// Don't know why the state not set to false, scope
+			game->setPlayerDead();
+			game->resetLevel();
+			g_isDeadMenu = true;
+		}
 		if (game->getPlayer().isAtFinishLine())
 		{
 			game->levelUp();
@@ -66,6 +66,7 @@ void main()
 	while (true)
 	{
 		tmp = toupper(_getch());
+
 		if (tmp == 'T')
 		{
 			game->pauseGame(t1.native_handle());
@@ -73,8 +74,7 @@ void main()
 			{
 				game->resetGame();
 				game->startGame();
-			}
-			else
+			} else
 				game->resumeGame(t1.native_handle());
 		}
 		if (tmp == 'L')
@@ -88,23 +88,20 @@ void main()
 			{
 				game->exitGame(t1);
 				return;
-			}
-			else if (tmp == 'P')
+			} else if (tmp == 'P')
 				game->pauseGame(t1.native_handle());
 			else
 			{
 				game->resumeGame(t1.native_handle());
 				MOVING = tmp;
 			}
-		}
-		else
+		} else
 		{
 			if (tmp == 'Y')
 			{
 				game->resetGame();
 				game->startGame();
-			}
-			else
+			} else
 			{
 				game->exitGame(t1);
 				return;

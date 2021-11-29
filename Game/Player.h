@@ -2,14 +2,18 @@
 #include "Vehicle.h"
 #include "Animal.h"
 #include "Entity.h"
+#include "Row.h"
 
 #include <vector>
+#include <deque> 
 
 class Player : public Entity
 {
 private:
 	bool isDead;
+
 	static Sprite* playerSprt;
+
 public:
 	// Maybe change this the default location
 	Player()
@@ -47,7 +51,8 @@ public:
 
 	void Up()
 	{
-		if (coord.Y >= 0) {
+		if (coord.Y >= 0)
+		{
 			if (coord.Y == 27)
 				coord.Y -= 4;
 			else
@@ -56,13 +61,15 @@ public:
 	}
 	void Left()
 	{
-		if (coord.X > 3) {
+		if (coord.X > 3)
+		{
 			coord.X--;
 		}
 	}
 	void Down()
 	{
-		if (coord.Y < 28) {
+		if (coord.Y < 28)
+		{
 			if (coord.Y == 23)
 				coord.Y += 4;
 			else if (coord.Y != 27)
@@ -71,19 +78,59 @@ public:
 	}
 	void Right()
 	{
-		if (coord.X < 76) {
+		if (coord.X < 76)
+		{
 			coord.X++;
 		}
 	}
 
-	bool isImpact(std::vector<Animal*> listAnimal) const
+	bool isImpact(std::vector<Row*>& listRow) const
 	{
-			//Move to Game
-	}
+		auto playerCoordY = this->getY();
+		unsigned int inRow = 0;
 
-	bool isImpact(std::vector<Vehicle*> listVehicle) const
-	{
-			//Move to Game
+		if (playerCoordY == 3 || playerCoordY == 27)
+		{
+			return false;
+		} else
+		{
+			inRow = (playerCoordY - 3) / 5 - 1;
+		}
+
+
+		Row* row = listRow[inRow];
+
+		unsigned int typeOfEnemy = row->getType();
+		std::deque<Entity*> listEnemy = row->GetList();
+
+		for (auto& mem : listEnemy)
+		{
+			auto coordXEnemy = mem->getX();
+
+			// Enemy -> Player
+			if (coordXEnemy < this->getX())
+			{
+				// Right | Left
+				if (coordXEnemy + mem->getBound(1) >= this->getX() - this->getBound(3))
+					return true;
+				else
+					continue;
+			}
+
+			if (coordXEnemy == this->getX())
+				return true;
+
+			// Player -> Enemy
+			if (coordXEnemy > this->getX())
+			{
+				if (this->getX() + this->getBound(1) >= coordXEnemy - mem->getBound(3))
+					return true;
+				else
+					continue;
+			}
+		}
+
+		return false;
 	}
 
 	bool isAtFinishLine() const

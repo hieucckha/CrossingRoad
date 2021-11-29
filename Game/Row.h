@@ -29,7 +29,7 @@ public:
 		isFromRight = rand() % 2;
 		isRedLight = false;
 	}
-	
+
 	~Row()
 	{
 		for (auto x : inhabitance)
@@ -63,6 +63,15 @@ public:
 		return isRedLight;
 	}
 
+	int getType() const
+	{
+		return type;
+	}
+
+	bool getIsFromRight() const
+	{
+		return isFromRight;
+	}
 	std::deque <Entity*> GetList() const
 	{
 		return inhabitance;
@@ -123,7 +132,7 @@ public:
 					inhabitance.push_back(new Car(prevXcoord + rand() % 50 + 20, y_coord));
 					//inhabitance.push_back(new Car(rand() % 110 + 110, y_coord));
 				}
-				
+
 				break;
 
 			case 1:
@@ -136,7 +145,7 @@ public:
 					inhabitance.push_back(new Truck(prevXcoord + (rand() % 50) + 20, y_coord));
 					//inhabitance.push_back(new Truck(rand() % 110 + 110, y_coord));
 				}
-				
+
 				break;
 
 			case 2:
@@ -149,7 +158,7 @@ public:
 					inhabitance.push_back(new Bird(prevXcoord + (rand() % 50) + 20, y_coord));
 					//inhabitance.push_back(new Bird(rand() % 110 + 110, y_coord));
 				}
-				
+
 				break;
 
 			case 3:
@@ -162,14 +171,13 @@ public:
 					inhabitance.push_back(new Dinosaur(prevXcoord + (rand() % 50) + 20, y_coord));
 					//inhabitance.push_back(new Dinosaur(rand() % 110 + 110, y_coord));
 				}
-				
+
 				break;
 
 			default:
 				break;
 			}
-		}
-		else // From Left
+		} else // From Left
 		{
 			switch (type)
 			{
@@ -183,7 +191,7 @@ public:
 					inhabitance.push_back(new Car(prevXcoord - (rand() % 50) - 20, y_coord));
 					//inhabitance.push_back(new Car(rand() % 110 - 110, y_coord));
 				}
-				
+
 				break;
 
 			case 1:
@@ -196,7 +204,7 @@ public:
 					inhabitance.push_back(new Truck(prevXcoord - (rand() % 50) - 20, y_coord));
 					//inhabitance.push_back(new Truck(rand() % 110 - 110, y_coord));
 				}
-				
+
 				break;
 
 			case 2:
@@ -209,7 +217,7 @@ public:
 					inhabitance.push_back(new Bird(prevXcoord - (rand() % 50) - 20, y_coord));
 					//inhabitance.push_back(new Bird(rand() % 110 - 110, y_coord));
 				}
-				
+
 				break;
 
 			case 3:
@@ -222,7 +230,7 @@ public:
 					inhabitance.push_back(new Dinosaur(prevXcoord - (rand() % 50) - 20, y_coord));
 					//inhabitance.push_back(new Dinosaur(rand() % 110 - 110, y_coord));
 				}
-				
+
 				break;
 
 			default:
@@ -242,8 +250,7 @@ public:
 					enemy->move(enemy->getX() - 1, enemy->getY());
 					if (enemy->getX() == -20)
 						enemy->move(110 + (rand() & 30) + 40, y_coord);
-				}
-				else
+				} else
 				{
 					enemy->move(enemy->getX() + 1, enemy->getY());
 					if (enemy->getX() == 150)
@@ -253,11 +260,10 @@ public:
 
 			if (rand() % 200 < 5) // Randomize when to turn red light
 				toggle();
-		}
-		else
+		} else
 		{
 			clock_t _t = clock() - t;
-			if (((int)_t)/CLOCKS_PER_SEC == redLightTime) // Timer to turn green light
+			if (((int)_t) / CLOCKS_PER_SEC == redLightTime) // Timer to turn green light
 			{
 				toggle();
 				t = clock();

@@ -6,6 +6,8 @@ x64/
 **/Data/
 **/x64/
 Testing/
-TesingGame/
+TestingGame/
 
 # File
+Testing/*
+TestingGame/*

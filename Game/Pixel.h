@@ -22,18 +22,18 @@ public:
 	}
 };
 
-class Scene
-{
-private:
-	SHORT width_, length_;
-	Pixel** scene_;
-
-public:
-	Scene()
-	{
-		GetWindowBufferSize(width_, length_);
-		scene_ = new Pixel * [width_];
-		for (size_t i = 0; i < width_; ++i)
-			scene_[i] = new Pixel[length_];
-	}
-};
+//class Scene
+//{
+//private:
+//	SHORT width_, length_;
+//	Pixel** scene_;
+//
+//public:
+//	Scene()
+//	{
+//		GetWindowBufferSize(width_, length_);
+//		scene_ = new Pixel * [width_];
+//		for (size_t i = 0; i < width_; ++i)
+//			scene_[i] = new Pixel[length_];
+//	}
+//};
