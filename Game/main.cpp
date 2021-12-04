@@ -83,7 +83,7 @@ void main()
 			if (tmp == 'T')
 			{
 				game->pauseGame(t1.native_handle());
-				game->loadGame(t1);
+				game->loadGame();
 				game->resumeGame(t1.native_handle());
 			}
 			if (tmp == 'L')

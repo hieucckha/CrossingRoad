@@ -35,16 +35,6 @@ public:
 		return playRow;
 	}
 
-	//void getBuffer(char src[30][150])
-	//{
-	//	std::memcpy((char*)src, (char const*)PrevBuffer, 150 * 30);
-	//}
-
-	//void setBuffer(char src[30][150])
-	//{
-	//	std::memcpy((char*)Buffer, (char const*)src, 150 * 30);
-	//}
-
 	void setBuffer(int col, int row, std::string nd)
 	{
 		for (int i = 0; i < nd.size(); i++)

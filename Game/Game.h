@@ -137,7 +137,7 @@ public:
 		//Redo
 	}
 
-	void loadGame(std::thread& t1)
+	void loadGame()
 	{
 		std::vector<std::string> listName;
 		std::vector<int> listLevel;
