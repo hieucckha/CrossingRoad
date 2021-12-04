@@ -35,6 +35,22 @@ public:
 		return playRow;
 	}
 
+	//void getBuffer(char src[30][150])
+	//{
+	//	std::memcpy((char*)src, (char const*)PrevBuffer, 150 * 30);
+	//}
+
+	//void setBuffer(char src[30][150])
+	//{
+	//	std::memcpy((char*)Buffer, (char const*)src, 150 * 30);
+	//}
+
+	void setBuffer(int col, int row, std::string nd)
+	{
+		for (int i = 0; i < nd.size(); i++)
+			Buffer[row][col + i] = nd[i];
+	}
+
 	/// <summary>
 	/// Display generated Buffer to the monitor
 	/// </summary>
@@ -120,7 +136,7 @@ public:
 	//Waiting for loading
 	void drawLoadMenu()
 	{
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 10; ++i)
 			memcpy((char*)(Buffer[i + 12] + 20), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
 	}
 
@@ -139,7 +155,7 @@ public:
 	}
 
 	const static char DeadMenu[7][33];
-	const static char LoadMenu[8][41];
+	const static char LoadMenu[10][41];
 	const static char SaveMenu[5][41];
 	const static char PauseMenu[5][41];
 };

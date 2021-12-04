@@ -114,6 +114,10 @@ public:
 
 	void resetGame()
 	{
+		row.clear();
+		updatePosPeople(' ');
+		updateRows();
+		drawGame();
 		//Redo
 	}
 
@@ -133,15 +137,77 @@ public:
 		//Redo
 	}
 
-	bool loadGame()
+	void loadGame(std::thread& t1)
 	{
-		//Redo
-		return false;
+		std::vector<std::string> listName;
+		std::vector<int> listLevel;
+
+		//Get data
+		std::fstream input("SaveGame.txt", std::ios::in);
+		std::string name;
+		int lvl;
+		while (input.eof() == false)
+		{
+			input >> lvl;
+			input.ignore(80, ' ');
+			getline(input, name);
+			listName.push_back(name);
+			listLevel.push_back(lvl);
+		}
+		listName.pop_back();
+		listLevel.pop_back();
+		input.close();
+
+		//Update the number of data in the file
+		int n = listName.size();
+		if (n > 4)
+		{
+			for (int i = 0; i < n - 4; i++)
+			{
+				listName.erase(listName.begin());
+				listLevel.erase(listLevel.begin());
+			}
+			n = listName.size();
+			std::fstream output("SaveGame.txt", std::ios::out);
+			for (int i = 0; i < n; i++)
+				output << listLevel[i] << " " << listName[i] << std::endl;
+			output.close();
+		}
+
+		gameScene.drawLoadMenu();
+		for (int i = 0; i < n; i++)
+		{
+			gameScene.setBuffer(23, 15 + i, listName[i]);
+			gameScene.setBuffer(37, 15 + i, "level: " + std::to_string(listLevel[i]));
+		}
+		gameScene.PrintBuffer();
+
+		GotoXY(40, 20); getline(std::cin, name);
+		gameScene.setBuffer(40, 20, name);
+		gameScene.PrintBuffer();
+		
+		for (int i = 0; i < n; i++)
+			if (name == listName[i])
+			{
+				level_ = listLevel[i];
+				resetGame();
+				startGame();
+			}
 	}
 
 	void saveGame()
 	{
-		//Redo
+		gameScene.drawSaveMenu();
+		gameScene.PrintBuffer();
+
+		std::string name;
+		GotoXY(37, 16); getline(std::cin, name);
+		gameScene.setBuffer(37, 16, name);
+		gameScene.PrintBuffer();
+
+		std::fstream out("SaveGame.txt", std::ios::app);
+		out << level_ << " " << name << std::endl;
+		out.close();
 	}
 
 	void pauseGame(HANDLE hd)
@@ -185,4 +251,5 @@ public:
 			x->move();
 		}
 	}
+
 };

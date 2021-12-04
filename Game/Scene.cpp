@@ -9,21 +9,23 @@ const char Scene::DeadMenu[7][33] = {
 	{"#                              #"},
 	{"################################"}
 };
-const char Scene::LoadMenu[8][41] = {
+const char Scene::LoadMenu[10][41] = {
 	{"########################################"},
 	{"#              LOAD GAME:              #"},
 	{"#                                      #"},
-	{"#  %d: %s                              #"}, //Max: 10
+	{"#                                      #"}, //Max: 10
 	{"#                                      #"},
-	{"#  Page: %d/%d                         #"},
-	{"#  Enter load file:         %s         #"},
+	{"#                                      #"},
+	{"#                                      #"},
+	{"#                                      #"},
+	{"#  Enter load file:                    #"},
 	{"########################################"}
 };
 const char Scene::SaveMenu[5][41] = {
 	{"########################################"},
 	{"#              SAVE GAME:              #"},
 	{"#                                      #"},
-	{"#  Name of file: %s                    #"},
+	{"#  Name of file:                       #"},
 	{"########################################"}
 };
 const char Scene::PauseMenu[5][41] = {

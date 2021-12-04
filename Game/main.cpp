@@ -67,21 +67,6 @@ void main()
 	{
 		tmp = toupper(_getch());
 
-		if (tmp == 'T')
-		{
-			game->pauseGame(t1.native_handle());
-			if (game->loadGame() == true)
-			{
-				game->resetGame();
-				game->startGame();
-			} else
-				game->resumeGame(t1.native_handle());
-		}
-		if (tmp == 'L')
-		{
-			game->pauseGame(t1.native_handle());
-			game->resumeGame(t1.native_handle());
-		}
 		if (!game->getPlayer().isPlayerDead())
 		{
 			if (tmp == 27)
@@ -94,6 +79,18 @@ void main()
 			{
 				game->resumeGame(t1.native_handle());
 				MOVING = tmp;
+			}
+			if (tmp == 'T')
+			{
+				game->pauseGame(t1.native_handle());
+				game->loadGame(t1);
+				game->resumeGame(t1.native_handle());
+			}
+			if (tmp == 'L')
+			{
+				game->pauseGame(t1.native_handle());
+				game->saveGame();
+				game->resumeGame(t1.native_handle());
 			}
 		} else
 		{
