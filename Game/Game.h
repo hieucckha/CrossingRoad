@@ -160,9 +160,9 @@ public:
 
 		//Update the number of data in the file
 		int n = listName.size();
-		if (n > 4)
+		if (n > 10)
 		{
-			for (int i = 0; i < n - 4; i++)
+			for (int i = 0; i < n - 10; i++)
 			{
 				listName.erase(listName.begin());
 				listLevel.erase(listLevel.begin());
@@ -177,13 +177,13 @@ public:
 		gameScene.drawLoadMenu();
 		for (int i = 0; i < n; i++)
 		{
-			gameScene.setBuffer(23, 15 + i, listName[i]);
-			gameScene.setBuffer(37, 15 + i, "level: " + std::to_string(listLevel[i]));
+			gameScene.setBuffer(23, 11 + i, listName[i]);
+			gameScene.setBuffer(37, 11 + i, "level: " + std::to_string(listLevel[i]));
 		}
 		gameScene.PrintBuffer();
 
-		GotoXY(40, 20); getline(std::cin, name);
-		gameScene.setBuffer(40, 20, name);
+		GotoXY(40, 22); getline(std::cin, name);
+		gameScene.setBuffer(40, 22, name);
 		gameScene.PrintBuffer();
 		
 		for (int i = 0; i < n; i++)

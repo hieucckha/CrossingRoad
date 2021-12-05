@@ -126,8 +126,8 @@ public:
 	//Waiting for loading
 	void drawLoadMenu()
 	{
-		for (int i = 0; i < 10; ++i)
-			memcpy((char*)(Buffer[i + 12] + 20), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
+		for (int i = 0; i < 16; ++i)
+			memcpy((char*)(Buffer[i + 8] + 20), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
 	}
 
 	//!!!NOT FINISH!!!
@@ -145,7 +145,7 @@ public:
 	}
 
 	const static char DeadMenu[7][33];
-	const static char LoadMenu[10][41];
+	const static char LoadMenu[16][41];
 	const static char SaveMenu[5][41];
 	const static char PauseMenu[5][41];
 };
