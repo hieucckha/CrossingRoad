@@ -48,7 +48,7 @@ void Game::drawBorder()
 	}
 }
 
-void Game::drawGame()
+void Game::drawNormalGame()
 {
 	GotoXY(this->player_.getX(), this->player_.getY());
 	std::cout << "P";

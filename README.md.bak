@@ -38,10 +38,10 @@
 
 - [X] Dead & Finish level
 - [X] Hiện sprite
-- [ ] Gen level (Same lane but more Car and Animal and faster?)
+- [ ] Gen level (Same lane but more Car and Animal and faster?)(Either that or the thing can teleport)
 - [ ] Menu
 - [X] Pause
-- [X] Save file/Load file
+- [ ] Save file/Load file
 - [X] Tạm dừng các xe
 - [ ] Xử lý hiệu ứng
 - [ ] Giao diện trò chơi

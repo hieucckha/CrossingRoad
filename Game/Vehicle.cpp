@@ -1,5 +1,7 @@
 #include "Vehicle.h"
 
-Sprite* Car::carSprt = new Sprite("Sprites\\Car.txt");
+Sprite* Car::carSprtRight = new Sprite("Sprites\\Car-Right.txt");
+Sprite* Car::carSprtLeft = new Sprite("Sprites\\Car-Left.txt");
 
-Sprite* Truck::truckSprt = new Sprite("Sprites\\Truck.txt");
+Sprite* Truck::truckSprtRight = new Sprite("Sprites\\Truck-Right.txt");
+Sprite* Truck::truckSprtLeft = new Sprite("Sprites\\Truck-Left.txt");

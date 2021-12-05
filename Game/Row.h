@@ -24,8 +24,8 @@ public:
 	{
 		type = (rand() % 4);
 		t = 0;
-		MAX_ENEMIES = 6;
-		redLightTime = 10;
+		MAX_ENEMIES = 3;
+		redLightTime = 2;
 		isFromRight = rand() % 2;
 		isRedLight = false;
 	}

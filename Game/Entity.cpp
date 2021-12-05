@@ -1,3 +1,4 @@
 #include "Entity.h"
 
-Sprite* Entity::sprt = new Sprite("Sprites\\Default.txt");
+Sprite* Entity::sprtRight = new Sprite("Sprites\\Default.txt");
+Sprite* Entity::sprtLeft = new Sprite("Sprites\\Default.txt");

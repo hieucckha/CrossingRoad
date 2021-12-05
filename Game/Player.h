@@ -78,7 +78,7 @@ public:
 	}
 	void Right()
 	{
-		if (coord.X < 76)
+		if (coord.X < 106)
 		{
 			coord.X++;
 		}
@@ -143,7 +143,7 @@ public:
 		return !isDead;
 	}
 
-	Sprite getSprite() const override
+	Sprite getSprite(bool isRight = 0) const override
 	{
 		return *playerSprt;
 	}

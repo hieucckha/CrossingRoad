@@ -16,7 +16,8 @@ public:
 class Bird : public Animal
 {
 private:
-	static Sprite* birdSprt;
+	static Sprite* birdSprtRight;
+	static Sprite* birdSprtLeft;
 public:
 	Bird(int x, int y)
 	{
@@ -26,28 +27,30 @@ public:
 
 	~Bird()
 	{
-		delete birdSprt;
+		delete birdSprtRight;
+		delete birdSprtLeft;
 	}
 
-	Sprite getSprite() const override
+	Sprite getSprite(bool isRight = 0) const override
 	{
-		return *birdSprt;
+		return (isRight) ? *birdSprtRight : *birdSprtLeft;
 	}
 	SHORT getSpriteHeight() const override
 	{
-		return birdSprt->getHeight();
+		return birdSprtRight->getHeight();
 	}
 
 	SHORT getSpriteWidth() const override
 	{
-		return birdSprt->getWidth();
+		return birdSprtRight->getWidth();
 	}
 };
 
 class Dinosaur : public Animal
 {
 private:
-	static Sprite* dinoSprt;
+	static Sprite* dinoSprtRight;
+	static Sprite* dinoSprtLeft;
 public:
 	Dinosaur(int x, int y)
 	{
@@ -57,21 +60,22 @@ public:
 
 	~Dinosaur()
 	{
-		delete dinoSprt;
+		delete dinoSprtRight;
+		delete dinoSprtLeft;
 	}
 
-	Sprite getSprite() const override
+	Sprite getSprite(bool isRight = 0) const override
 	{
-		return *dinoSprt;
+		return (isRight) ? *dinoSprtRight : *dinoSprtLeft;
 	}
 	SHORT getSpriteHeight() const override
 	{
-		return dinoSprt->getHeight();
+		return dinoSprtRight->getHeight();
 	}
 
 	SHORT getSpriteWidth() const override
 	{
-		return dinoSprt->getWidth();
+		return dinoSprtRight->getWidth();
 	}
 };
 #endif // _ANIMAL

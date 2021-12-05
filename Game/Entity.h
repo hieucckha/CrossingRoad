@@ -6,9 +6,12 @@
 
 class Entity
 {
+private:
+	static Sprite* sprtRight;
+	static Sprite* sprtLeft;
+
 protected:
 	COORD coord;
-	static Sprite* sprt;
 
 	//Clockwise
 	SHORT bound[4];
@@ -17,7 +20,7 @@ public:
 	{
 		coord.X = 0;
 		coord.Y = 0;
-		sprt = nullptr;
+		sprtRight = nullptr;
 		bound[0] = 0;
 		bound[1] = 0;
 		bound[2] = 0;
@@ -25,7 +28,7 @@ public:
 	}
 	~Entity()
 	{
-		delete sprt;
+		delete sprtRight;
 	}
 
 	SHORT getX() const
@@ -46,12 +49,12 @@ public:
 
 	virtual SHORT getSpriteHeight() const
 	{
-		return sprt->getHeight();
+		return sprtRight->getHeight();
 	}
 
 	virtual SHORT getSpriteWidth() const
 	{
-		return sprt->getWidth();
+		return sprtRight->getWidth();
 	}
 
 	SHORT getBound(int index) const
@@ -59,9 +62,9 @@ public:
 		return bound[index];
 	}
 
-	virtual Sprite getSprite() const 
+	virtual Sprite getSprite(bool isRight = 0) const 
 	{
-		return *sprt;
+		return (isRight)? *sprtRight : *sprtLeft;
 	}
 
 	void recalBound()

@@ -15,7 +15,7 @@ void SubThread()
 		if (g_isDeadMenu)
 		{
 			//!!!!DEBUG_ONLY!!!!
-			game->drawDeadMenu();
+			game->deadMenu();
 			std::cin.ignore();	//Should be pause and let the player choose
 			std::cin;			//instead of cin
 			g_isDeadMenu = false;
@@ -29,9 +29,8 @@ void SubThread()
 
 		MOVING = ' ';
 		game->updateRows();
-		game->drawGame();
+		game->drawNormalGame();
 
-		// Dead AAAAAAAAAA
 		if (game->getPlayer().isImpact(game->getRow()))
 		{
 			// Don't know why the state not set to false, scope
@@ -59,6 +58,8 @@ void main()
 	int tmp = 0;
 
 	FixConsoleWindow();
+	setConsoleFontSize();
+	ResizeWindow();
 	ShowConsoleCursor(false);
 
 	game->startGame();
@@ -73,24 +74,30 @@ void main()
 			{
 				game->exitGame(t1);
 				return;
-			} else if (tmp == 'P')
-				game->pauseGame(t1.native_handle());
+			}
+			else if (tmp == 'P')
+			{
+				game->pauseSystem(t1.native_handle());
+				game->pauseGame();
+				game->resumeSystem(t1.native_handle());
+				MOVING = tmp;
+			}
 			else
 			{
-				game->resumeGame(t1.native_handle());
+				game->resumeSystem(t1.native_handle());
 				MOVING = tmp;
 			}
 			if (tmp == 'T')
 			{
-				game->pauseGame(t1.native_handle());
+				game->pauseSystem(t1.native_handle());
 				game->loadGame();
-				game->resumeGame(t1.native_handle());
+				game->resumeSystem(t1.native_handle());
 			}
 			if (tmp == 'L')
 			{
-				game->pauseGame(t1.native_handle());
+				game->pauseSystem(t1.native_handle());
 				game->saveGame();
-				game->resumeGame(t1.native_handle());
+				game->resumeSystem(t1.native_handle());
 			}
 		} else
 		{
@@ -103,12 +110,6 @@ void main()
 				game->exitGame(t1);
 				return;
 			}
-		}
-		if (tmp == 'O')
-		{
-			game->setPlayerDead();
-			game->resetLevel();
-			g_isDeadMenu = true;
 		}
 	}
 }

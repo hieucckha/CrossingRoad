@@ -60,3 +60,38 @@ void ClearConsoleScreen()
 	FillConsoleOutputAttribute(hOut, csbi.wAttributes, length, topLeft, &written);
 	SetConsoleCursorPosition(hOut, topLeft);
 }
+
+void ResizeWindow()
+{
+	HWND console = GetConsoleWindow();
+	RECT r;
+
+	GetWindowRect(console, &r);
+
+	CONSOLE_FONT_INFO font;
+	GetCurrentConsoleFont(GetStdHandle(STD_OUTPUT_HANDLE), 0, &font);
+
+	MoveWindow(console, r.left, r.top, font.dwFontSize.X * 150, (font.dwFontSize.Y + 2) * 30, TRUE);
+}
+
+void setConsoleFontSize()
+{
+	CONSOLE_FONT_INFO OrigFont;
+	GetCurrentConsoleFont(GetStdHandle(STD_OUTPUT_HANDLE), 0, &OrigFont);
+
+	PCONSOLE_FONT_INFOEX NewFont = new CONSOLE_FONT_INFOEX();
+
+	COORD FontSize = { 9, 18 };
+
+	NewFont->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+	NewFont->nFont = OrigFont.nFont; // apparently this is Lucida Console (no consts are provided [3])
+	NewFont->dwFontSize = FontSize;
+	NewFont->FontWeight = FW_NORMAL; // = 400, but should use predefined consts
+	NewFont->FontFamily = FF_DONTCARE; // FF_ROMAN didn't work for me
+
+	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), 0, NewFont);
+
+	delete NewFont;
+}
+
+

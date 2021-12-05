@@ -16,7 +16,8 @@ public:
 class Car : public Vehicle
 {
 private:
-	static Sprite* carSprt;
+	static Sprite* carSprtRight;
+	static Sprite* carSprtLeft;
 public:
 	Car(int x, int y)
 	{
@@ -26,28 +27,30 @@ public:
 
 	~Car()
 	{
-		delete carSprt;
+		delete carSprtRight;
+		delete carSprtLeft;
 	}
 
-	Sprite getSprite() const override
+	Sprite getSprite(bool isRight = 0) const override
 	{
-		return *carSprt;
+		return (isRight)? *carSprtRight : *carSprtLeft;
 	}
 	SHORT getSpriteHeight() const override
 	{
-		return carSprt->getHeight();
+		return carSprtRight->getHeight();
 	}
 
 	SHORT getSpriteWidth() const override
 	{
-		return carSprt->getWidth();
+		return carSprtRight->getWidth();
 	}
 };
 
 class Truck : public Vehicle
 {
 private:
-	static Sprite* truckSprt;
+	static Sprite* truckSprtRight;
+	static Sprite* truckSprtLeft;
 public:
 	Truck(int x, int y)
 	{
@@ -57,21 +60,22 @@ public:
 
 	~Truck()
 	{
-		delete truckSprt;
+		delete truckSprtRight;
+		delete truckSprtLeft;
 	}
 
-	Sprite getSprite() const override
+	Sprite getSprite(bool isRight = 0) const override
 	{
-		return *truckSprt;
+		return (isRight) ? *truckSprtRight : *truckSprtLeft;
 	}
 	SHORT getSpriteHeight() const override
 	{
-		return truckSprt->getHeight();
+		return truckSprtRight->getHeight();
 	}
 
 	SHORT getSpriteWidth() const override
 	{
-		return truckSprt->getWidth();
+		return truckSprtRight->getWidth();
 	}
 };
 

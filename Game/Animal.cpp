@@ -1,5 +1,7 @@
 #include "Animal.h"
 
-Sprite* Bird::birdSprt = new Sprite("Sprites\\Bird.txt");
+Sprite* Bird::birdSprtRight = new Sprite("Sprites\\Bird-Right.txt");
+Sprite* Bird::birdSprtLeft = new Sprite("Sprites\\Bird-Left.txt");
 
-Sprite* Dinosaur::dinoSprt = new Sprite("Sprites\\Dino.txt");
+Sprite* Dinosaur::dinoSprtRight = new Sprite("Sprites\\Dino-Right.txt");
+Sprite* Dinosaur::dinoSprtLeft = new Sprite("Sprites\\Dino-Left.txt");

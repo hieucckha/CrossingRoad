@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstring>
 #include <cstdio>
+#include <conio.h>
 #include <fstream>
 #include <string>
 
@@ -25,13 +26,6 @@ private:
 	int level_;
 	Player player_;
 
-	//!!!!DEBUG_ONLY!!!!
-	//Bird* testBird;
-	//Dinosaur* testDino;
-	//Car* testCar;
-	//Truck* testTruck;
-	//!!!!END_OF_DEBUG!!!!
-
 	Scene gameScene;
 	std::vector<Row*> row;
 public:
@@ -39,10 +33,6 @@ public:
 	{
 		level_ = 0;
 
-		//testBird = new Bird(0, 7);
-		//testDino = new Dinosaur(39, 12);
-		//testCar = new Car(39, 17);
-		//testTruck = new Truck(39, 22);
 	}
 
 	~Game()
@@ -69,13 +59,9 @@ public:
 	/// <summary>
 	/// Generate and display ALL elements of the game
 	/// </summary>
-	void drawGame()
+	void drawNormalGame()
 	{
 		gameScene.drawScene(level_);
-		//gameScene.drawEntity(*testBird);
-		//gameScene.drawEntity(*testDino);
-		//gameScene.drawEntity(*testCar);
-		//gameScene.drawEntity(*testTruck);
 
 		for (auto x : row)
 			gameScene.drawOneRow(*x);
@@ -85,7 +71,7 @@ public:
 	}
 
 	//Remember to pause the game
-	void drawDeadMenu()
+	void deadMenu()
 	{
 		gameScene.drawDeadMenu();
 		gameScene.PrintBuffer();
@@ -117,8 +103,7 @@ public:
 		row.clear();
 		updatePosPeople(' ');
 		updateRows();
-		drawGame();
-		//Redo
+		drawNormalGame();
 	}
 
 	void exitGame(std::thread& thd)
@@ -134,7 +119,6 @@ public:
 		player_.setState(true);
 
 		player_.move(39, 27);
-		//Redo
 	}
 
 	void loadGame()
@@ -210,12 +194,20 @@ public:
 		out.close();
 	}
 
-	void pauseGame(HANDLE hd)
+	void pauseGame()
+	{
+		gameScene.drawPauseMenu();
+		gameScene.PrintBuffer();
+		Sleep(10);
+		char tmp = _getch();
+	}
+
+	void pauseSystem(HANDLE hd)
 	{
 		SuspendThread(hd);
 	}
 
-	void resumeGame(HANDLE hd)
+	void resumeSystem(HANDLE hd)
 	{
 		ResumeThread(hd);
 	}

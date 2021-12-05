@@ -40,3 +40,7 @@ void ShowConsoleCursor(bool showFlag);
 //
 void ClearConsoleScreen();
 
+void ResizeWindow();
+
+void setConsoleFontSize();
+
