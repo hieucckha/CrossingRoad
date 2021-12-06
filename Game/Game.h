@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Win32Helper.h"
+#include "MMSystem.h"
+#pragma comment(lib, "winmm.lib")
 
 #include "Windows.h"
 #include <iostream>
@@ -14,25 +16,25 @@
 #include <conio.h>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
-static bool g_isRunning = false;
-static bool g_isPause = false;
-static bool g_isMenu = false;
-static bool g_isDeadMenu = false;
+static bool g_isRunning = false; // True if the game it currently running (false on pause, main menu...)
+static bool g_isPause = false; // True if the game is pause
+static bool g_isMainMenu = true; // True if the game is at main menu
+static bool g_isDeadMenu = false; //True if the player is dead
 
 class Game
 {
 private:
-	int level_;
-	Player player_;
+	int level_; // Current level
+	Player player_; // Player
 
-	Scene gameScene;
-	std::vector<Row*> row;
+	Scene gameScene; // Scene for displaying the game
+	std::vector<Row*> row; // Manage each row in the scene
 public:
 	Game()
 	{
 		level_ = 0;
-
 	}
 
 	~Game()
@@ -50,10 +52,53 @@ public:
 	}
 	/// <summary>
 	/// Display generated Buffer to the monitor
+	/// Causion when use outside of SubThread
 	/// </summary>
 	void PrintBuffer()
 	{
 		gameScene.PrintBuffer();
+	}
+
+	/// <summary>
+	/// Display main menu
+	/// </summary>
+	void mainMenu()					//Khai Part
+	{
+		gameScene.drawMainMenu();
+		gameScene.PrintBuffer();
+		//TO DO
+		//Display list:
+		//1: New Game
+		//2: Load Game
+		//3: Setting
+	}
+
+	/// <summary>
+	/// Set Volume of the game
+	/// </summary>
+	/// <param name="percent"></param>
+	void setVol(int percent)
+	{
+		DWORD dwVol;
+
+		waveOutGetVolume(NULL, &dwVol);
+		waveOutSetVolume(NULL, dwVol * percent);
+	}
+
+	/// <summary>
+	/// Play music of game
+	/// </summary>
+	void playMusic()
+	{
+		DWORD dwVol = MAXDWORD;
+		waveOutSetVolume(NULL, dwVol);
+
+		PlaySound(TEXT("Music\\music.wav"), NULL, SND_ASYNC | SND_LOOP);
+	}
+
+	void stopMusic()
+	{
+		PlaySound(NULL, NULL, SND_ASYNC);
 	}
 
 	/// <summary>
@@ -71,13 +116,12 @@ public:
 	}
 
 	//Remember to pause the game
-	void deadMenu()
+	void playerDead()
 	{
 		gameScene.drawDeadMenu();
 		gameScene.PrintBuffer();
 	}
 
-	//!!!Error, don't know why the dead not toggle!!!
 	void setPlayerDead()
 	{
 		player_.setState(false);
@@ -108,7 +152,6 @@ public:
 
 	void exitGame(std::thread& thd)
 	{
-		g_isRunning = false;
 		ClearConsoleScreen();
 		thd.join();
 	}
@@ -118,7 +161,7 @@ public:
 		g_isRunning = true;
 		player_.setState(true);
 
-		player_.move(39, 27);
+		player_.move(55, 27);
 	}
 
 	void loadGame()
@@ -161,15 +204,15 @@ public:
 		gameScene.drawLoadMenu();
 		for (int i = 0; i < n; i++)
 		{
-			gameScene.setBuffer(23, 11 + i, listName[i]);
-			gameScene.setBuffer(37, 11 + i, "level: " + std::to_string(listLevel[i]));
+			gameScene.setStrToBuffer(23, 11 + i, listName[i]);
+			gameScene.setStrToBuffer(37, 11 + i, "level: " + std::to_string(listLevel[i]));
 		}
 		gameScene.PrintBuffer();
 
 		GotoXY(40, 22); getline(std::cin, name);
-		gameScene.setBuffer(40, 22, name);
+		gameScene.setStrToBuffer(40, 22, name);
 		gameScene.PrintBuffer();
-		
+
 		for (int i = 0; i < n; i++)
 			if (name == listName[i])
 			{
@@ -186,7 +229,7 @@ public:
 
 		std::string name;
 		GotoXY(37, 16); getline(std::cin, name);
-		gameScene.setBuffer(37, 16, name);
+		gameScene.setStrToBuffer(37, 16, name);
 		gameScene.PrintBuffer();
 
 		std::fstream out("SaveGame.txt", std::ios::app);
@@ -198,8 +241,6 @@ public:
 	{
 		gameScene.drawPauseMenu();
 		gameScene.PrintBuffer();
-		Sleep(10);
-		char tmp = _getch();
 	}
 
 	void pauseSystem(HANDLE hd)
@@ -210,6 +251,25 @@ public:
 	void resumeSystem(HANDLE hd)
 	{
 		ResumeThread(hd);
+	}
+
+	void deadScene(unsigned int deadBy)
+	{
+		if (deadBy == 2)
+		{
+			PlaySound(TEXT("Music\\Bird.wav"), NULL, SND_ASYNC);
+			gameScene.deadByBird();
+		}
+		else if (deadBy == 3)
+		{
+			PlaySound(TEXT("Music\\Dino.wav"), NULL, SND_ASYNC);
+			gameScene.deadByDino();
+		}
+		else
+		{
+			PlaySound(TEXT("Music\\Car.wav"), NULL, SND_ASYNC);
+			gameScene.deadByVehicle();
+		}
 	}
 
 	void updatePosPeople(char moveKey)

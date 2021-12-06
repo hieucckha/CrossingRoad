@@ -120,6 +120,10 @@ public:
 	{
 		if (isFromRight)
 		{
+			//0: Car
+			//1: Truck
+			//2: Bird
+			//4: Dino
 			switch (type)
 			{
 			case 0:

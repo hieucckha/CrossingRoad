@@ -1,0 +1,27 @@
+# TODO:
+
+- [ ] Đừng để game **Endless** thành **End~~less~~**
+- [ ] Thêm chiều ngược lại của các hình
+- [ ] Mở rộng khung cho game, mở rộng hàng cho game: 4 -> 8-10 hàng
+- [x] Đưa các hình vẽ vào code
+- [x] Border cho khung game
+- [x] Viết lại cách render hình, cho tất cả qua buffer rồi vẽ buffer
+- [x] Thêm thông số hàng, vị trí hàng khi người chơi đang đứng -> Khi mà check va chạm chỉ cần check trong cái hàng đó thôi
+- [x] Thêm row, thêm entity chạy qua lại
+- [ ] Thêm mode hard vào trong game
+- [x] Viết cách gen của mỗi level
+  - [x] Speed : Easy | Hard (còn tuỳ)
+  - [x] Số lượng enemy trên mỗi hàng or tổng số enemy rồi chia đều cho mỗi hàng: Easy: 3 - 3Up1 | Hard: 4 - 2Up1
+- [x] Viết cách gen entity của mỗi hàng
+  - [x] Gen Linear: Linear thì sẽ xuất hiện từ trong border đi ra
+  - [ ] Gen Random: Random thì ngẫu nhiên trên màn hình (tránh trường hợp đè chữ W khi mới bắt đầu)
+  - [ ] Cho phép các enemy đè lên nhau, vì không đè sẽ bị giới hạn số lượng enemy trên mỗi hàng
+- [x] Thêm thông tin level, hướng dẫn di chuyển
+- [x] Traffic Light
+- [x] Viết lại hàm check va chạm
+- [ ] Pause/Resume Game
+- [x] Thêm setting vào trong menu
+- [ ] Thêm menu
+- [X] Thêm Save/Load
+- [ ] Hiệu ứng va chạm
+- [ ] Chỉnh lại speed và thời gian chờ phù hợp khi bật qua `Mode Release`

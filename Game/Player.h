@@ -84,14 +84,14 @@ public:
 		}
 	}
 
-	bool isImpact(std::vector<Row*>& listRow) const
+	int isImpact(std::vector<Row*>& listRow) const
 	{
 		auto playerCoordY = this->getY();
 		unsigned int inRow = 0;
 
 		if (playerCoordY == 3 || playerCoordY == 27)
 		{
-			return false;
+			return 0;
 		} else
 		{
 			inRow = (playerCoordY - 3) / 5 - 1;
@@ -112,25 +112,25 @@ public:
 			{
 				// Right | Left
 				if (coordXEnemy + mem->getBound(1) >= this->getX() - this->getBound(3))
-					return true;
+					return typeOfEnemy + 1;
 				else
 					continue;
 			}
 
 			if (coordXEnemy == this->getX())
-				return true;
+				return typeOfEnemy + 1;
 
 			// Player -> Enemy
 			if (coordXEnemy > this->getX())
 			{
 				if (this->getX() + this->getBound(1) >= coordXEnemy - mem->getBound(3))
-					return true;
+					return typeOfEnemy + 1;
 				else
 					continue;
 			}
 		}
 
-		return false;
+		return 0;
 	}
 
 	bool isAtFinishLine() const

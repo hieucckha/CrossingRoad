@@ -10,12 +10,12 @@
 - [x] Thêm row, thêm entity chạy qua lại
 - [ ] Thêm mode hard vào trong game
 - [x] Viết cách gen của mỗi level
-  - [x] Speed : Easy | Hard (còn tuỳ)
-  - [x] Số lượng enemy trên mỗi hàng or tổng số enemy rồi chia đều cho mỗi hàng: Easy: 3 - 3Up1 | Hard: 4 - 2Up1
+- [x] Speed : Easy | Hard (còn tuỳ)
+- [x] Số lượng enemy trên mỗi hàng or tổng số enemy rồi chia đều cho mỗi hàng: Easy: 3 - 3Up1 | Hard: 4 - 2Up1
 - [x] Viết cách gen entity của mỗi hàng
-  - [x] Gen Linear: Linear thì sẽ xuất hiện từ trong border đi ra
-  - [ ] Gen Random: Random thì ngẫu nhiên trên màn hình (tránh trường hợp đè chữ W khi mới bắt đầu)
-  - [ ] Cho phép các enemy đè lên nhau, vì không đè sẽ bị giới hạn số lượng enemy trên mỗi hàng
+- [x] Gen Linear: Linear thì sẽ xuất hiện từ trong border đi ra
+- [ ] Gen Random: Random thì ngẫu nhiên trên màn hình (tránh trường hợp đè chữ W khi mới bắt đầu)
+- [ ] Cho phép các enemy đè lên nhau, vì không đè sẽ bị giới hạn số lượng enemy trên mỗi hàng
 - [x] Thêm thông tin level, hướng dẫn di chuyển
 - [x] Traffic Light
 - [x] Viết lại hàm check va chạm

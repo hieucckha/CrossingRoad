@@ -84,6 +84,9 @@ public:
 
 			inputSprite.close();
 		}
+
+		height = sprt.size();
+		width = sprt[0].size();
 	}
 
 	SHORT getHeight()

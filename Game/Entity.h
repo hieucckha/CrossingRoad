@@ -73,7 +73,7 @@ public:
 		bound[0] = (getSpriteHeight() - 1) / 2;
 		bound[1] = floor((getSpriteWidth() - 1) / 2);
 		bound[2] = getSpriteHeight() / 2;
-		bound[3] = ceil((getSpriteWidth() - 1) / 2);
+		bound[3] = ceil((getSpriteWidth()) / 2);
 	}
 };
 
