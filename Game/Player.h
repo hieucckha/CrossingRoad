@@ -101,7 +101,7 @@ public:
 		Row* row = listRow[inRow];
 
 		unsigned int typeOfEnemy = row->getType();
-		std::deque<Entity*> listEnemy = row->GetList();
+		std::vector<Entity*> listEnemy = row->GetList();
 
 		for (auto& mem : listEnemy)
 		{

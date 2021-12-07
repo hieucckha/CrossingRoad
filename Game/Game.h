@@ -238,7 +238,7 @@ public:
 
 		for (auto& x : row)
 		{
-			x->setTimeatLevel(level_);
+			x->AtLevel(level_);
 			x->append();
 			x->move();
 		}

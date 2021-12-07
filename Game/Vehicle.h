@@ -51,6 +51,7 @@ class Truck : public Vehicle
 private:
 	static Sprite* truckSprtRight;
 	static Sprite* truckSprtLeft;
+
 public:
 	Truck(int x, int y)
 	{
