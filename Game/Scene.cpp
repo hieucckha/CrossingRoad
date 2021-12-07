@@ -5,7 +5,7 @@ const char Scene::DeadMenu[7][33] = {
 	{"#                              #"},
 	{"#       Your are dead...       #"},
 	{"#          Continue?           #"},
-	{"#     Yes             No       #"},
+	{"#    Y: Restart  Others: End   #"},
 	{"#                              #"},
 	{"################################"}
 };

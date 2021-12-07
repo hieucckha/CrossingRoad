@@ -7,33 +7,43 @@
 
 char MOVING;
 Game* game;
+bool getchNext;
 
 void SubThread()
 {
+	int deadBy = 0;
 	while (g_isRunning)
 	{
+		if (!getchNext)
+		{
+			Sleep(50);
+			continue;
+		}
+
+		if (g_isMainMenu)
+		{
+			game->mainMenu();
+			continue;
+		}
 		if (g_isDeadMenu)
 		{
-			//!!!!DEBUG_ONLY!!!!
-			game->deadMenu();
-			std::cin.ignore();	//Should be pause and let the player choose
-			std::cin;			//instead of cin
-			g_isDeadMenu = false;
-			game->resetGame();
+			game->deadScene(deadBy);
+			game->playerDead();
+			getchNext = false;
 			continue;
-			//!!!!END_OF_DEBUG!!!!
 		}
 
 		if (!game->getPlayer().isPlayerDead())
 			game->updatePosPeople(MOVING);
 
+		deadBy = 0;
 		MOVING = ' ';
 		game->updateRows();
 		game->drawNormalGame();
 
-		if (game->getPlayer().isImpact(game->getRow()))
+		if ((deadBy = game->getPlayer().isImpact(game->getRow())))
 		{
-			// Don't know why the state not set to false, scope
+			deadBy--;
 			game->setPlayerDead();
 			game->resetLevel();
 			g_isDeadMenu = true;
@@ -45,15 +55,14 @@ void SubThread()
 			game->startGame();
 		}
 
-		//Redo the impact checking
-
-		Sleep(17);
+		Sleep(50);
 	}
 }
 
 void main()
 {
 	game = new Game();
+	getchNext = true;
 
 	int tmp = 0;
 
@@ -62,11 +71,38 @@ void main()
 	ResizeWindow();
 	ShowConsoleCursor(false);
 
+	game->playMusic();
 	game->startGame();
+
 	std::thread t1(SubThread);
 	while (true)
 	{
 		tmp = toupper(_getch());
+
+		if (g_isMainMenu)
+		{
+			g_isMainMenu = false;
+			continue;
+		}
+		if (g_isPause)
+		{
+			g_isPause = false;
+			game->resumeSystem(t1.native_handle());
+		}
+		if (g_isDeadMenu)
+		{
+			g_isDeadMenu = false;
+
+			if (tmp == 'Y')
+			{
+				game->resetGame();
+				game->startGame();
+				game->playMusic();
+			}
+			else
+				g_isRunning = false;
+
+		}
 
 		if (!game->getPlayer().isPlayerDead())
 		{
@@ -79,7 +115,7 @@ void main()
 			{
 				game->pauseSystem(t1.native_handle());
 				game->pauseGame();
-				game->resumeSystem(t1.native_handle());
+				g_isPause = true;
 				MOVING = tmp;
 			}
 			else
@@ -99,17 +135,16 @@ void main()
 				game->saveGame();
 				game->resumeSystem(t1.native_handle());
 			}
-		} else
+		}
+		else
 		{
-			if (tmp == 'Y')
-			{
-				game->resetGame();
-				game->startGame();
-			} else
+			if (!g_isRunning)
 			{
 				game->exitGame(t1);
+				game->stopMusic();
 				return;
 			}
 		}
+		getchNext = true;
 	}
 }

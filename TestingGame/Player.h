@@ -32,19 +32,6 @@ public:
 		x_++;
 	}
 
-	bool isImpact(Vehicle* const& listVehicle) const
-	{
-		for (int i = 0; i < 10; ++i)
-		{
-			if (listVehicle[i].getX() == this->x_ && listVehicle[i].getY() == this->y_)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	bool isFinish() const
 	{
 		if (y_ == 3)

@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include "Row.h"
+#include "Sprite.h"
 #include "Pixel.h"
 #include "Win32Helper.h"
 
@@ -18,6 +20,7 @@ private:
 	LightMode PrevLight[4];
 	LightMode Light[4];
 
+	Sprite Logo;
 public:
 	Scene()
 	{
@@ -26,6 +29,8 @@ public:
 
 		memset(PrevLight, int(LightMode::GREEN), sizeof(LightMode::GREEN) * 4);
 		memset(Light, int(LightMode::GREEN), sizeof(LightMode::GREEN) * 4);
+
+		Logo.openFile("Sprites\\MainScreen.txt");
 	}
 
 	~Scene()
@@ -42,10 +47,15 @@ public:
 		return playCol;
 	}
 
-	void setBuffer(int col, int row, std::string nd)
+	void setStrToBuffer(int col, int row, std::string nd)
 	{
 		for (int i = 0; i < nd.size(); i++)
 			Buffer[row][col + i] = nd[i];
+	}
+
+	void deathScene()
+	{
+		//TO DO
 	}
 
 	/// <summary>
@@ -121,6 +131,88 @@ public:
 		snprintf((*(Buffer + 22) + playCol + 2), 2, "%c", 254);
 	}
 
+	void deadByBird()
+	{
+		int x = 5, y = 20;
+
+		std::fstream file("Scene\\BirdDeath.txt");
+		int r, c, total;
+		file >> r;
+		file >> c;
+		file >> total;
+		file.ignore();
+
+		for (int i = 0; i < total; ++i)
+		{
+			for (int j = 0; j < r; ++j)
+			{
+				std::string temp;
+				getline(file, temp);
+				setStrToBuffer(y, x + j, temp);
+			}
+			file.ignore();
+			PrintBuffer();
+			Sleep(225);
+		}
+
+		file.close();
+	}
+
+	void deadByDino()
+	{
+		int x = 5, y = 19;
+
+		std::fstream file("Scene\\DinoDeath.txt");
+		int r, c, total;
+		file >> r;
+		file >> c;
+		file >> total;
+		file.ignore();
+
+		for (int i = 0; i < total; ++i)
+		{
+			for (int j = 0; j < r; ++j)
+			{
+				std::string temp;
+				getline(file, temp);
+				setStrToBuffer(y, x + j, temp);
+			}
+			file.ignore();
+			PrintBuffer();
+			Sleep(300);
+		}
+
+		Sleep(150);
+		file.close();
+	}
+
+	void deadByVehicle()
+	{
+		int x = 8, y = 20;
+
+		std::fstream file("Scene\\CarDeath.txt");
+		int r, c, total;
+		file >> r;
+		file >> c;
+		file >> total;
+		file.ignore();
+
+		for (int i = 0; i < total; ++i)
+		{
+			for (int j = 0; j < r; ++j)
+			{
+				std::string temp;
+				getline(file, temp);
+				setStrToBuffer(y, x + j, temp);
+			}
+			file.ignore();
+			PrintBuffer();
+			Sleep(250);
+		}
+
+		file.close();
+	}
+
 	void drawEntity(const Entity& obj, bool isRight = 0)
 	{
 		for (int y = 0; y < obj.getSpriteHeight(); ++y)
@@ -142,28 +234,35 @@ public:
 			drawEntity(*enemy, !obj.getIsFromRight());
 	}
 
+	void drawMainMenu()
+	{
+		for (int i = 0; i < Logo.getHeight(); ++i)
+			for (int j = 0; j < Logo.getWidth(); ++j)
+				Buffer[i + 7][j +14] = Logo[i][j];
+	}
+
 	void drawDeadMenu()
 	{
 		for (int i = 0; i < 7; ++i)
-			memcpy((char*)(Buffer[i + 12] + 24), (char*)(DeadMenu[i]), strlen(DeadMenu[0]));
+			memcpy((char*)(Buffer[i + 12] + 39), (char*)(DeadMenu[i]), strlen(DeadMenu[0]));
 	}
 
 	void drawLoadMenu()
 	{
 		for (int i = 0; i < 16; ++i)
-			memcpy((char*)(Buffer[i + 8] + 20), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
+			memcpy((char*)(Buffer[i + 8] + 35), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
 	}
 
 	void drawSaveMenu()
 	{
 		for (int i = 0; i < 5; ++i)
-			memcpy((char*)(Buffer[i + 13] + 20), (char*)(SaveMenu[i]), strlen(SaveMenu[0]));
+			memcpy((char*)(Buffer[i + 13] + 35), (char*)(SaveMenu[i]), strlen(SaveMenu[0]));
 	}
 
 	void drawPauseMenu()
 	{
 		for (int i = 0; i < 5; ++i)
-			memcpy((char*)(Buffer[i + 13] + 20), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
+			memcpy((char*)(Buffer[i + 13] + 35), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
 	}
 
 	const static char DeadMenu[7][33];
