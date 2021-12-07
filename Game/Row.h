@@ -13,10 +13,11 @@ private:
 	int y_coord; // Coordinate Y
 	int type; // Type of enemy
 	int MAX_ENEMIES; // Max number of enemies on a row
-	clock_t t; //Speed
-	int speed;
-	int _speed;
-	int distance;
+	clock_t t; // Time
+	int speed;  //Speed
+	int _speed; //Speed buffer
+	int _lvl;
+	int distance; // Distance between 2 entities
 	int redLightTime; // Red light time
 	bool isFromRight; // true if Row from right
 	bool isRedLight; // true if Row has red light
@@ -27,10 +28,11 @@ public:
 	{
 		type = (rand() % 4);
 		t = 0;
+		_lvl = 0;
 		MAX_ENEMIES = 5;
-		redLightTime = 5;
-		speed = 4;
-		distance = 40;
+		redLightTime = 4;
+		speed = 2;
+		distance = 30;
 		_speed = speed;
 		isFromRight = rand() % 2;
 		isRedLight = false;
@@ -118,25 +120,25 @@ public:
 
 	void AtLevel(int lvl) // Set new red light time by new level
 	{
-		static int _lvl = 0;
 		if (lvl > 0 && _lvl != lvl)
 		{
-			if (lvl % 16 == 0) // Lvl.12 24 36... set new values
+			if (lvl % 13 == 0) // Lvl.12 24 36... set new values
 			{
 				MAX_ENEMIES = 6;
-				speed =	3;
 				redLightTime = 4;
-				distance = 40;
+				speed = 0;
+				distance = 30;
 			}
-			else if (lvl % 3 == 0 && MAX_ENEMIES < 8) // Lvl.3 6 9 increase enemies, decrease distance
+			else if (lvl % 3 == 0 && MAX_ENEMIES < 7) // Lvl.3 6 9 increase enemies, decrease distance
 			{
 				MAX_ENEMIES++;
 				distance -= 10;
 			}
-			else if (lvl % 5 == 0 && speed > 0) // Lvl.5 10 15 decrease stop time
+			else if (lvl % 2 == 0 && redLightTime > 1) // Lvl.2 4 8 decrease stop time
+			{
 				redLightTime--;
-			else if (lvl % 2 == 1 && redLightTime > 3) // Lvl.(prime number) increase speed
 				speed--;
+			}
 
 			_lvl = lvl;
 		}
@@ -149,53 +151,65 @@ public:
 			//0: Car
 			//1: Truck
 			//2: Bird
-			//4: Dino
+			//3: Dino
 			switch (type)
 			{
 			case 0:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Car(rand() % 110 - 20, y_coord));
+				{
+					inhabitance.push_back(new Car(rand() % 90 - 20, y_coord));
+					//inhabitance.push_back(new Car(rand() % 110 - 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Car(prevXcoord + (rand() % distance) + 20, y_coord));
+					inhabitance.push_back(new Car(prevXcoord + (rand() % distance) + 30, y_coord));
 				}
 
 				break;
 
 			case 1:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Truck(rand() % 110 - 20, y_coord));
+				{
+					inhabitance.push_back(new Truck(rand() % 90 - 20, y_coord));
+					//inhabitance.push_back(new Truck(rand() % 110 - 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Truck(prevXcoord + (rand() % distance) + 20, y_coord));
+					inhabitance.push_back(new Truck(prevXcoord + (rand() % distance) + 30, y_coord));
 				}
 
 				break;
 
 			case 2:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Bird(rand() % 110 - 20, y_coord));
+				{
+					inhabitance.push_back(new Bird(rand() % 90 - 20, y_coord));
+					//inhabitance.push_back(new Bird(rand() % 110 - 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Bird(prevXcoord + (rand() % distance) + 20, y_coord));
+					inhabitance.push_back(new Bird(prevXcoord + (rand() % distance) + 30, y_coord));
 				}
 
 				break;
 
 			case 3:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Dinosaur(rand() % 110 - 20, y_coord));
+				{
+					inhabitance.push_back(new Dinosaur(rand() % 90 - 20, y_coord));
+					//inhabitance.push_back(new Dinosaur(rand() % 110 - 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Dinosaur(prevXcoord + (rand() % distance) + 20, y_coord));
+					inhabitance.push_back(new Dinosaur(prevXcoord + (rand() % distance) + 30, y_coord));
 				}
 
 				break;
@@ -209,48 +223,60 @@ public:
 			{
 			case 0:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Car(rand() % 110 + 20, y_coord));
+				{
+					inhabitance.push_back(new Car(rand() % 90 + 20, y_coord));
+					//inhabitance.push_back(new Car(rand() % 110 + 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Car(prevXcoord - (rand() % distance) - 20, y_coord));
+					inhabitance.push_back(new Car(prevXcoord - (rand() % distance) - 30, y_coord));
 				}
 
 				break;
 
 			case 1:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Truck(rand() % 110 + 20, y_coord));
+				{
+					inhabitance.push_back(new Truck(rand() % 90 + 20, y_coord));
+					//inhabitance.push_back(new Truck(rand() % 110 + 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Truck(prevXcoord - (rand() % distance) - 20, y_coord));
+					inhabitance.push_back(new Truck(prevXcoord - (rand() % distance) - 30, y_coord));
 				}
 
 				break;
 
 			case 2:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Bird(rand() % 110 + 20, y_coord));
+				{
+					inhabitance.push_back(new Bird(rand() % 90 + 20, y_coord));
+					//inhabitance.push_back(new Bird(rand() % 110 + 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Bird(prevXcoord - (rand() % distance) - 20, y_coord));
+					inhabitance.push_back(new Bird(prevXcoord - (rand() % distance) - 30, y_coord));
 				}
 
 				break;
 
 			case 3:
 				if (inhabitance.empty())
-					inhabitance.push_back(new Dinosaur(rand() % 110 + 20, y_coord));
+				{
+					inhabitance.push_back(new Dinosaur(rand() % 90 + 20, y_coord));
+					//inhabitance.push_back(new Dinosaur(rand() % 110 + 60, y_coord));
+				}
 
 				if (inhabitance.size() < MAX_ENEMIES)
 				{
 					int prevXcoord = inhabitance.back()->getX();
-					inhabitance.push_back(new Dinosaur(prevXcoord - (rand() % 50) - 20, y_coord));
+					inhabitance.push_back(new Dinosaur(prevXcoord - (rand() % 50) - 30, y_coord));
 				}
 
 				break;
@@ -285,7 +311,7 @@ public:
 					}
 				}
 
-				if (rand() % 200 < 5) // Randomize when to turn red light
+				if (rand() % 200 < 2 && inhabitance.size() >= 4) // Randomize when to turn red light
 					toggle();
 
 				_speed = speed; // Timing to move etity
