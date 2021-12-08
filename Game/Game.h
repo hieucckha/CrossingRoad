@@ -29,6 +29,7 @@ private:
 	int level_; // Current level
 	Player player_; // Player
 
+
 	Scene gameScene; // Scene for displaying the game
 	std::vector<Row*> row; // Manage each row in the scene
 public:
@@ -286,7 +287,6 @@ public:
 
 	void updateRows()
 	{
-		srand((unsigned)time(NULL));
 		// Initialize
 		if (row.empty())
 		{

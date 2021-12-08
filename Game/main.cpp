@@ -16,7 +16,7 @@ void SubThread()
 	{
 		if (!getchNext)
 		{
-			Sleep(50);
+			//Sleep(50);
 			continue;
 		}
 
@@ -55,12 +55,12 @@ void SubThread()
 			game->startGame();
 		}
 
-		Sleep(50);
+		//Sleep(50);
 	}
 }
 
 void main()
-{
+{	
 	game = new Game();
 	getchNext = true;
 
