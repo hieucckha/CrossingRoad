@@ -1,8 +1,9 @@
 #ifndef _ROW
 #define _ROW
-#pragma once
+
 #include "Animal.h"
 #include "Vehicle.h"
+
 #include <Windows.h>
 #include <vector> 
 #include <ctime>

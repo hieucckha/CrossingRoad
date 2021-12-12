@@ -9,55 +9,64 @@
 #include "Pixel.h"
 #include "Win32Helper.h"
 
-enum class LightMode { RED, GREEN };
+enum class LightMode
+{
+	RED, GREEN
+};
 
 class Scene
 {
 private:
-	int row = 30, playCol = 110, totalCol = 150;
-	char PrevBuffer[30][150];
-	char Buffer[30][150];
-	LightMode PrevLight[4];
-	LightMode Light[4];
+	int _row = 30, _playCol = 110, _totalCol = 150;
 
-	Sprite Logo;
+	char _prevContentBuffer[30][150];
+	char _contentBuffer[30][150];
+
+	char _prevForegroundBuffer[30][150];
+	char _foregroundBuffer[30][150];
+
+	LightMode _prevLight[4];
+	LightMode _light[4];
+
+	Sprite _logo;
 public:
 	Scene()
 	{
-		memset(Buffer, (int)' ', 150 * 30);
-		memset(PrevBuffer, (int)' ', 150 * 30);
+		memset(_contentBuffer, (int)' ', 150 * 30);
+		memset(_prevContentBuffer, (int)' ', 150 * 30);
 
-		memset(PrevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
-		memset(Light, int(LightMode::RED), sizeof(LightMode::RED) * 4);
+		memset(_prevForegroundBuffer, FOREGROUND_WHITE, 150 * 30);
+		memset(_foregroundBuffer, FOREGROUND_WHITE, 150 * 30);
 
-		Logo.openFile("Sprites\\MainScreen.txt");
+		memset(_prevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
+		memset(_light, int(LightMode::RED), sizeof(LightMode::RED) * 4);
+
+		_logo.openFile("Sprites\\MainScreen.txt");
 	}
 
-	~Scene()
-	{
-	}
+	~Scene() = default;
 
+	// Getter
 	int getCol() const
 	{
-		return row;
+		return _row;
 	}
-
 	int getRow() const
 	{
-		return playCol;
+		return _playCol;
 	}
 
 	void setStrToBuffer(int col, int row, std::string nd)
 	{
 		for (int i = 0; i < nd.size(); i++)
-			Buffer[row][col + i] = nd[i];
+			_contentBuffer[row][col + i] = nd[i];
 	}
 
 	void clearPrevBuffer()
 	{
-		memset(PrevBuffer, (int)'&', 150 * 30);
+		memset(_prevContentBuffer, (int)'&', 150 * 30);
 
-		memset(PrevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
+		memset(_prevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
 	}
 
 	/// <summary>
@@ -69,27 +78,39 @@ public:
 		{
 			for (SHORT c = 0; c < 150; ++c)
 			{
-				if (Buffer[r][c] == PrevBuffer[r][c])
+				if (_contentBuffer[r][c] == _prevContentBuffer[r][c] && _foregroundBuffer[r][c] == _prevForegroundBuffer[r][c])
 					continue;
-
-				GotoXY(c, r);
-				std::cout << Buffer[r][c];
+				else if (_contentBuffer[r][c] != _prevContentBuffer[r][c] && _foregroundBuffer[r][c] == _prevForegroundBuffer[r][c])
+				{
+					GotoXY(c, r);
+					std::cout << _contentBuffer[r][c];
+				} else
+				{
+					GotoXY(c, r);
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), _foregroundBuffer[r][c]);
+					std::cout << _contentBuffer[r][c];
+				}
 			}
 		}
 
-		for (int i = 0; i < 4; ++i) {
-			if (Light[i] != PrevLight[i])
+		for (int i = 0; i < 4; ++i)
+		{
+			if (_light[i] != _prevLight[i])
 			{
-				GotoXY(playCol + 2, (i + 1) * 5 + 2);
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (Light[i] == LightMode::GREEN) ? 10 : 12);
-				std::cout << Buffer[(i + 1) * 5 + 2][playCol + 2];
+				GotoXY(_playCol + 2, (i + 1) * 5 + 2);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (_light[i] == LightMode::GREEN) ? 10 : 12);
+				std::cout << _contentBuffer[(i + 1) * 5 + 2][_playCol + 2];
 			}
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 
 		std::cout.flush();
-		std::memcpy((char*)PrevBuffer, (char const*)Buffer, 150 * 30);
-		std::memcpy((char*)PrevLight, (char const*)Light, sizeof(LightMode::GREEN) * 4);
+
+		std::memcpy((char*)_prevContentBuffer, (char const*)_contentBuffer, 150 * 30);
+		std::memcpy((char*)_prevForegroundBuffer, (char const*)_foregroundBuffer, 150 * 30);
+		std::memcpy((char*)_prevLight, (char const*)_light, sizeof(LightMode::GREEN) * 4);
+
+		memset(_foregroundBuffer, FOREGROUND_WHITE, 150 * 30);
 	}
 
 	/// <summary>
@@ -99,38 +120,37 @@ public:
 	{
 		//ClearConsoleScreen();
 
-		for (int i = 0; i < row; ++i)
-			Buffer[i][totalCol - 1] = '\n';
+		for (int i = 0; i < _row; ++i)
+			_contentBuffer[i][_totalCol - 1] = '\n';
 
-		for (int r = 0; r < row; ++r)
+		for (int r = 0; r < _row; ++r)
 		{
-			for (int c = 0; c < totalCol - 40; ++c)
+			for (int c = 0; c < _totalCol - 40; ++c)
 			{
-				if (r == 0 || r == row - 1)
-					Buffer[r][c] = '#';
+				if (r == 0 || r == _row - 1)
+					_contentBuffer[r][c] = '#';
 				else if (r % 5 == 0)
 				{
-					if (c == 0 || c == totalCol - 41)
-						Buffer[r][c] = '#';
+					if (c == 0 || c == _totalCol - 41)
+						_contentBuffer[r][c] = '#';
 					else
-						Buffer[r][c] = '_';
-				}
-				else
+						_contentBuffer[r][c] = '_';
+				} else
 				{
-					if (c == 0 || c == totalCol - 41)
-						Buffer[r][c] = '#';
+					if (c == 0 || c == _totalCol - 41)
+						_contentBuffer[r][c] = '#';
 					else
-						Buffer[r][c] = ' ';
+						_contentBuffer[r][c] = ' ';
 				}
 			}
 		}
 
-		snprintf((*(Buffer + row / 2) + playCol + 2), 14, "Level: %d", level_);
+		snprintf((*(_contentBuffer + _row / 2) + _playCol + 2), 14, "Level: %d", level_);
 
-		snprintf((*(Buffer + 7) + playCol + 2), 2, "%c", 254);
-		snprintf((*(Buffer + 12) + playCol + 2), 2, "%c", 254);
-		snprintf((*(Buffer + 17) + playCol + 2), 2, "%c", 254);
-		snprintf((*(Buffer + 22) + playCol + 2), 2, "%c", 254);
+		snprintf((*(_contentBuffer + 7) + _playCol + 2), 2, "%c", 254);
+		snprintf((*(_contentBuffer + 12) + _playCol + 2), 2, "%c", 254);
+		snprintf((*(_contentBuffer + 17) + _playCol + 2), 2, "%c", 254);
+		snprintf((*(_contentBuffer + 22) + _playCol + 2), 2, "%c", 254);
 	}
 
 	void deadByBird()
@@ -215,12 +235,13 @@ public:
 		file.close();
 	}
 
-	void drawEntity(const Entity& obj, bool isRight = 0)
+	void drawEntity(const Entity& obj, bool isRight = false)
 	{
 		for (int y = 0; y < obj.getSpriteHeight(); ++y)
-			for (int x = 0; x < obj.getSpriteWidth(); ++x) {
-				if ((y + obj.getY() - obj.getBound(0) > 0 && y + obj.getY() - obj.getBound(0) < row - 1) && (x + obj.getX() - obj.getBound(3) > 0 && x + obj.getX() - obj.getBound(3) < playCol - 1))
-					Buffer[y + obj.getY() - obj.getBound(0)][x + obj.getX() - obj.getBound(3)] = obj.getSprite(isRight)[y][x];
+			for (int x = 0; x < obj.getSpriteWidth(); ++x)
+			{
+				if ((y + obj.getY() - obj.getBound(0) > 0 && y + obj.getY() - obj.getBound(0) < _row - 1) && (x + obj.getX() - obj.getBound(3) > 0 && x + obj.getX() - obj.getBound(3) < _playCol - 1))
+					_contentBuffer[y + obj.getY() - obj.getBound(0)][x + obj.getX() - obj.getBound(3)] = obj.getSprite(isRight)[y][x];
 			}
 	}
 
@@ -228,9 +249,9 @@ public:
 	{
 		//Draw traffic light
 		if (obj.GetRedLight())
-			Light[(obj.GetY() - 2) / 5 - 1] = LightMode::RED;
+			_light[(obj.GetY() - 2) / 5 - 1] = LightMode::RED;
 		else
-			Light[(obj.GetY() - 2) / 5 - 1] = LightMode::GREEN;
+			_light[(obj.GetY() - 2) / 5 - 1] = LightMode::GREEN;
 
 		for (auto& enemy : obj.GetList())
 			drawEntity(*enemy, !obj.getIsFromRight());
@@ -238,42 +259,50 @@ public:
 
 	void drawMainMenu()
 	{
-		for (int i = 0; i < Logo.getHeight(); ++i)
-			for (int j = 0; j < Logo.getWidth(); ++j)
-				Buffer[i + 3][j + 42] = Logo[i][j];
+		for (int i = 0; i < _logo.getHeight(); ++i)
+		{
+			for (int j = 0; j < _logo.getWidth(); ++j)
+			{
+				_contentBuffer[i + 3][j + 42] = _logo[i][j];
+				_foregroundBuffer[i + 3][j + 42] = FOREGROUND_LIGHT_GREEN;
+			}
+		}
 
 		for (int i = 0; i < 7; ++i)
-			memcpy((char*)(Buffer[i + 19] + 61), (char*)(MainMenu[i]), strlen(MainMenu[0]));
+			memcpy((char*)(_contentBuffer[i + 19] + 61), (char*)(MainMenu[i]), strlen(MainMenu[0]));
 	}
 
 	void drawSettingMenu()
 	{
 		for (int i = 0; i < 7; ++i)
-			memcpy((char*)(Buffer[i + 19] + 61), (char*)(Setting[i]), strlen(Setting[0]));
+			memcpy((char*)(_contentBuffer[i + 19] + 61), (char*)(Setting[i]), strlen(Setting[0]));
 	}
 
 	void drawDeadMenu()
 	{
 		for (int i = 0; i < 7; ++i)
-			memcpy((char*)(Buffer[i + 12] + 39), (char*)(DeadMenu[i]), strlen(DeadMenu[0]));
+		{
+			memcpy((char*)(_contentBuffer[i + 12] + 39), (char*)(DeadMenu[i]), strlen(DeadMenu[0]));
+			memset(_foregroundBuffer[i + 12] + 39, FOREGROUND_RED, sizeof(char) * strlen(DeadMenu[0]));
+		}
 	}
 
 	void drawLoadMenu()
 	{
 		for (int i = 0; i < 16; ++i)
-			memcpy((char*)(Buffer[i + 8] + 35), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
+			memcpy((char*)(_contentBuffer[i + 8] + 35), (char*)(LoadMenu[i]), strlen(LoadMenu[0]));
 	}
 
 	void drawSaveMenu()
 	{
 		for (int i = 0; i < 5; ++i)
-			memcpy((char*)(Buffer[i + 13] + 35), (char*)(SaveMenu[i]), strlen(SaveMenu[0]));
+			memcpy((char*)(_contentBuffer[i + 13] + 35), (char*)(SaveMenu[i]), strlen(SaveMenu[0]));
 	}
 
 	void drawPauseMenu()
 	{
 		for (int i = 0; i < 5; ++i)
-			memcpy((char*)(Buffer[i + 13] + 35), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
+			memcpy((char*)(_contentBuffer[i + 13] + 35), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
 	}
 
 	const static char DeadMenu[7][33];
@@ -283,6 +312,5 @@ public:
 	const static char MainMenu[7][27];
 	const static char Setting[7][27];
 };
-
 
 #endif //!_SCENE

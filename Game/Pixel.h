@@ -2,25 +2,25 @@
 #include "Win32Helper.h"
 #include <vector>
 
-class Pixel
-{
-private:
-	char pixel_;
-	unsigned char text_, background_;
-
-public:
-	Pixel()
-	{
-		pixel_ = ' ';
-		text_ = Color_White;
-		background_ = Color_Black;
-	}
-
-	void SetBG(unsigned char color)
-	{
-		background_ = color;
-	}
-};
+//class Pixel
+//{
+//private:
+//	char pixel_;
+//	unsigned char text_, background_;
+//
+//public:
+//	Pixel()
+//	{
+//		pixel_ = ' ';
+//		text_ = Color_White;
+//		background_ = Color_Black;
+//	}
+//
+//	void SetBG(unsigned char color)
+//	{
+//		background_ = color;
+//	}
+//};
 
 //class Scene
 //{

@@ -94,4 +94,10 @@ void setConsoleFontSize()
 	delete NewFont;
 }
 
+void SetConsoleColor(unsigned char color)
+{
+	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::cout.flush();
+	SetConsoleTextAttribute(hOut, color);
+}
 
