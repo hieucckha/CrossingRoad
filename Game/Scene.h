@@ -27,8 +27,8 @@ public:
 		memset(Buffer, (int)' ', 150 * 30);
 		memset(PrevBuffer, (int)' ', 150 * 30);
 
-		memset(PrevLight, int(LightMode::GREEN), sizeof(LightMode::GREEN) * 4);
-		memset(Light, int(LightMode::GREEN), sizeof(LightMode::GREEN) * 4);
+		memset(PrevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
+		memset(Light, int(LightMode::RED), sizeof(LightMode::RED) * 4);
 
 		Logo.openFile("Sprites\\MainScreen.txt");
 	}
@@ -53,9 +53,11 @@ public:
 			Buffer[row][col + i] = nd[i];
 	}
 
-	void deathScene()
+	void clearPrevBuffer()
 	{
-		//TO DO
+		memset(PrevBuffer, (int)'&', 150 * 30);
+
+		memset(PrevLight, int(LightMode::RED), sizeof(LightMode::RED) * 4);
 	}
 
 	/// <summary>
@@ -238,7 +240,16 @@ public:
 	{
 		for (int i = 0; i < Logo.getHeight(); ++i)
 			for (int j = 0; j < Logo.getWidth(); ++j)
-				Buffer[i + 7][j +14] = Logo[i][j];
+				Buffer[i + 3][j + 42] = Logo[i][j];
+
+		for (int i = 0; i < 7; ++i)
+			memcpy((char*)(Buffer[i + 19] + 61), (char*)(MainMenu[i]), strlen(MainMenu[0]));
+	}
+
+	void drawSettingMenu()
+	{
+		for (int i = 0; i < 7; ++i)
+			memcpy((char*)(Buffer[i + 19] + 61), (char*)(Setting[i]), strlen(Setting[0]));
 	}
 
 	void drawDeadMenu()
@@ -269,6 +280,9 @@ public:
 	const static char LoadMenu[16][41];
 	const static char SaveMenu[5][41];
 	const static char PauseMenu[5][41];
+	const static char MainMenu[7][27];
+	const static char Setting[7][27];
 };
 
-#endif _SCENE
+
+#endif //!_SCENE

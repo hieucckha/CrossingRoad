@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Scene.h"
 #include "Win32Helper.h"
+#include <cstdint>
 #include "MMSystem.h"
 #pragma comment(lib, "winmm.lib")
 
@@ -22,6 +23,12 @@ static bool g_isRunning = false; // True if the game it currently running (false
 static bool g_isPause = false; // True if the game is pause
 static bool g_isMainMenu = true; // True if the game is at main menu
 static bool g_isDeadMenu = false; //True if the player is dead
+static bool g_isAnimate = false; //True if the game is running an animation
+static bool g_isMusic = true;
+//static bool g_getchNext = true; //True if the system is ready for another input
+
+#define OFF	0
+#define ON	-1
 
 class Game
 {
@@ -29,13 +36,14 @@ private:
 	int level_; // Current level
 	Player player_; // Player
 
-
+	int vol;
 	Scene gameScene; // Scene for displaying the game
 	std::vector<Row*> row; // Manage each row in the scene
 public:
 	Game()
 	{
 		level_ = 0;
+		vol = 100;
 	}
 
 	~Game()
@@ -63,27 +71,10 @@ public:
 	/// <summary>
 	/// Display main menu
 	/// </summary>
-	void mainMenu()					//Khai Part
+	void mainMenu()
 	{
 		gameScene.drawMainMenu();
 		gameScene.PrintBuffer();
-		//TO DO
-		//Display list:
-		//1: New Game
-		//2: Load Game
-		//3: Setting
-	}
-
-	/// <summary>
-	/// Set Volume of the game
-	/// </summary>
-	/// <param name="percent"></param>
-	void setVol(int percent)
-	{
-		DWORD dwVol;
-
-		waveOutGetVolume(NULL, &dwVol);
-		waveOutSetVolume(NULL, dwVol * percent);
 	}
 
 	/// <summary>
@@ -91,7 +82,7 @@ public:
 	/// </summary>
 	void playMusic()
 	{
-		DWORD dwVol = MAXDWORD;
+		DWORD dwVol = ON;
 		waveOutSetVolume(NULL, dwVol);
 
 		PlaySound(TEXT("Music\\music.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -167,8 +158,8 @@ public:
 
 	void loadGame()
 	{
-		std::vector<std::string> listName;
-		std::vector<int> listLevel;
+		std::deque<std::string> listName;
+		std::deque<int> listLevel;
 
 		//Get data
 		std::fstream input("SaveGame.txt", std::ios::in);
@@ -205,13 +196,13 @@ public:
 		gameScene.drawLoadMenu();
 		for (int i = 0; i < n; i++)
 		{
-			gameScene.setStrToBuffer(23, 11 + i, listName[i]);
-			gameScene.setStrToBuffer(37, 11 + i, "level: " + std::to_string(listLevel[i]));
+			gameScene.setStrToBuffer(38, 11 + i, listName[i]);
+			gameScene.setStrToBuffer(52, 11 + i, "level: " + std::to_string(listLevel[i]));
 		}
 		gameScene.PrintBuffer();
 
-		GotoXY(40, 22); getline(std::cin, name);
-		gameScene.setStrToBuffer(40, 22, name);
+		GotoXY(55, 22); getline(std::cin, name);
+		gameScene.clearPrevBuffer();
 		gameScene.PrintBuffer();
 
 		for (int i = 0; i < n; i++)
@@ -229,8 +220,8 @@ public:
 		gameScene.PrintBuffer();
 
 		std::string name;
-		GotoXY(37, 16); getline(std::cin, name);
-		gameScene.setStrToBuffer(37, 16, name);
+		GotoXY(52, 16); getline(std::cin, name);
+		gameScene.clearPrevBuffer();
 		gameScene.PrintBuffer();
 
 		std::fstream out("SaveGame.txt", std::ios::app);
@@ -254,8 +245,45 @@ public:
 		ResumeThread(hd);
 	}
 
+	void atMainMenu(char input, HANDLE hd)
+	{
+		if (input == 'N')
+		{
+			g_isMainMenu = false;
+		}
+		else if (input == 'T')
+		{
+			pauseSystem(hd);
+			loadGame();
+			g_isMainMenu = false;
+			resumeSystem(hd);
+		}
+		else if (input == 'S')
+		{
+			int newVol = 0;
+			pauseSystem(hd);
+			gameScene.drawSettingMenu();
+			gameScene.PrintBuffer();
+
+			GotoXY(81, 21);
+			char settingInput = toupper(_getch());
+			if (settingInput == 'T')
+			{
+				g_isMusic = !g_isMusic;
+				if (g_isMusic)
+					playMusic();
+				else
+					stopMusic();
+			}
+			gameScene.clearPrevBuffer();
+			gameScene.PrintBuffer();
+			resumeSystem(hd);
+		}
+	}
+
 	void deadScene(unsigned int deadBy)
 	{
+		g_isAnimate = true;
 		if (deadBy == 2)
 		{
 			PlaySound(TEXT("Music\\Bird.wav"), NULL, SND_ASYNC);
@@ -271,6 +299,7 @@ public:
 			PlaySound(TEXT("Music\\Car.wav"), NULL, SND_ASYNC);
 			gameScene.deadByVehicle();
 		}
+		g_isAnimate = false;
 	}
 
 	void updatePosPeople(char moveKey)

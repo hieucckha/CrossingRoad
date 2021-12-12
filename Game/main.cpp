@@ -16,7 +16,6 @@ void SubThread()
 	{
 		if (!getchNext)
 		{
-			//Sleep(50);
 			continue;
 		}
 
@@ -79,9 +78,11 @@ void main()
 	{
 		tmp = toupper(_getch());
 
+		if (g_isAnimate)
+			continue;
 		if (g_isMainMenu)
 		{
-			g_isMainMenu = false;
+			game->atMainMenu(tmp, t1.native_handle());
 			continue;
 		}
 		if (g_isPause)
