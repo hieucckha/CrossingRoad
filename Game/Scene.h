@@ -301,16 +301,23 @@ public:
 
 	void drawPauseMenu()
 	{
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 6; ++i)
 			memcpy((char*)(_contentBuffer[i + 13] + 35), (char*)(PauseMenu[i]), strlen(PauseMenu[0]));
+	}
+
+	void drawManual()
+	{
+		for (int i = 0; i < 5; ++i)
+			memcpy((char*)(_contentBuffer[i + 5] + 118), (char*)(Manual[i]), strlen(Manual[0]));
 	}
 
 	const static char DeadMenu[7][33];
 	const static char LoadMenu[16][41];
 	const static char SaveMenu[5][41];
-	const static char PauseMenu[5][41];
+	const static char PauseMenu[6][41];
 	const static char MainMenu[7][27];
 	const static char Setting[7][27];
+	const static char Manual[5][26];
 };
 
 #endif //!_SCENE

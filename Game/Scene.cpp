@@ -9,6 +9,7 @@ const char Scene::DeadMenu[7][33] = {
 	{"#                              #"},
 	{"################################"}
 };
+
 const char Scene::LoadMenu[16][41] = {
 	{"########################################"},
 	{"#              LOAD GAME:              #"},
@@ -27,6 +28,7 @@ const char Scene::LoadMenu[16][41] = {
 	{"#  Enter load file:                    #"},
 	{"########################################"}
 };
+
 const char Scene::SaveMenu[5][41] = {
 	{"########################################"},
 	{"#              SAVE GAME:              #"},
@@ -34,10 +36,11 @@ const char Scene::SaveMenu[5][41] = {
 	{"#  Name of file:                       #"},
 	{"########################################"}
 };
-const char Scene::PauseMenu[5][41] = {
+const char Scene::PauseMenu[6][41] = {
 	{"########################################"},
 	{"#                                      #"},
 	{"#              PAUSED GAME             #"},
+	{"#       Press any key to resume...     #"},
 	{"#                                      #"},
 	{"########################################"}
 };
@@ -59,5 +62,14 @@ const char Scene::Setting[7][27] = {
 	{"#                        #"},
 	{"#   Others: Back         #"},
 	{"#                        #"},
-	{"##########################"},
+	{"##########################"}
+};
+
+
+const char Scene::Manual[5][26] = {
+	{"         MANUAL          "},
+	{"[W] Up          [P] Pause"},
+	{"[S] Down        [L] Save "},
+	{"[A] Left        [T] Load "},
+	{"[D] Right                "}
 };

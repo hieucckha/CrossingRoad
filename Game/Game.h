@@ -104,6 +104,7 @@ public:
 			gameScene.drawOneRow(*x);
 
 		gameScene.drawEntity(player_);
+		gameScene.drawManual();
 		gameScene.PrintBuffer();
 	}
 

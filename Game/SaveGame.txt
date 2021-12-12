@@ -1,4 +1,3 @@
-2 Khai
 3 Hao 
 4 Duy
 4 Hieu123
@@ -8,3 +7,4 @@
 0 Duy123
 5 TuanDuy
 0 Duyabc
+0 l
