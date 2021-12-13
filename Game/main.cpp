@@ -74,7 +74,7 @@ void main()
 	game->startGame();
 
 	std::thread t1(SubThread);
-	while (true)
+	while (g_isRunning)
 	{
 		tmp = toupper(_getch());
 
@@ -109,8 +109,7 @@ void main()
 		{
 			if (tmp == 27)
 			{
-				game->exitGame(t1);
-				return;
+				g_isRunning = false;
 			}
 			else if (tmp == 'P')
 			{
@@ -137,15 +136,11 @@ void main()
 				game->resumeSystem(t1.native_handle());
 			}
 		}
-		else
-		{
-			if (!g_isRunning)
-			{
-				game->exitGame(t1);
-				game->stopMusic();
-				return;
-			}
-		}
+
 		getchNext = true;
 	}
+
+	game->exitGame(t1);
+	game->stopMusic();
+	return;
 }

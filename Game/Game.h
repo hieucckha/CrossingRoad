@@ -25,7 +25,6 @@ static bool g_isMainMenu = true; // True if the game is at main menu
 static bool g_isDeadMenu = false; //True if the player is dead
 static bool g_isAnimate = false; //True if the game is running an animation
 static bool g_isMusic = true;
-//static bool g_getchNext = true; //True if the system is ready for another input
 
 #define OFF	0
 #define ON	-1
@@ -280,6 +279,11 @@ public:
 			gameScene.PrintBuffer();
 			resumeSystem(hd);
 		}
+		else if (input == 27)
+		{
+			g_isRunning = false;
+		}
+		gameScene.clearPrevBuffer();
 	}
 
 	void deadScene(unsigned int deadBy)

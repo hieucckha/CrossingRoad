@@ -263,8 +263,8 @@ public:
 		{
 			for (int j = 0; j < _logo.getWidth(); ++j)
 			{
-				_contentBuffer[i + 3][j + 42] = _logo[i][j];
-				_foregroundBuffer[i + 3][j + 42] = FOREGROUND_LIGHT_GREEN;
+				_contentBuffer[i][j] = _logo[i][j];
+				_foregroundBuffer[i][j] = FOREGROUND_LIGHT_GREEN;
 			}
 		}
 
@@ -275,7 +275,11 @@ public:
 	void drawSettingMenu()
 	{
 		for (int i = 0; i < 7; ++i)
-			memcpy((char*)(_contentBuffer[i + 19] + 61), (char*)(Setting[i]), strlen(Setting[0]));
+			for(int j = 0; j < 27; ++j)
+		{
+			_contentBuffer[i + 19][j + 61] = Setting[i][j];
+			_foregroundBuffer[i + 19][j + 61] = FOREGROUND_LIGHT_GREEN;
+		}
 	}
 
 	void drawDeadMenu()
