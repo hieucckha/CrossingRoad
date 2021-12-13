@@ -1,14 +1,15 @@
 #include "GameMain/Game.h"
 
 #include <iostream>
-#include <stdlib.h>
 #include <ctime>
+#include <cstdlib>
+#include <conio.h>
 
 Game* game;
 
 int main()
 {
-	srand((unsigned int)time(NULL));
+	srand((unsigned int)time(nullptr));
 
 	MoveWindow(GetConsoleWindow(), 10, 10, 1280, 720, TRUE);
 	FixConsoleWindow();
@@ -18,5 +19,7 @@ int main()
 	game->Menu();
 	
 	delete game;
+
+	_getch();
 	return 0;
 }

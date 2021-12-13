@@ -1,5 +1,8 @@
 # Crossing Road
 
+## Môi trường
+- MSVC 2019, không dùng lib ngoài
+
 ## Logic game
 
 - Chia thành nhiều module:
@@ -33,4 +36,5 @@
 - [x] Thêm setting vào trong menu
 - [ ] Hiệu ứng va chạm
 - [ ] Chỉnh lại speed và thời gian chờ phù hợp khi bật qua `Mode Release`
-- [ ] Chỉnh lại chữ trong trong menu chính cho đẹp hơn
+- [X] Chỉnh lại chữ trong trong menu chính cho đẹp hơn
+- [ ] Thêm credit và end credit khi thoát game
