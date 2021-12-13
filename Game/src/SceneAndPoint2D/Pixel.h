@@ -1,5 +1,5 @@
 #pragma once
-#include "Win32Helper.h"
+#include "../WindowsConsole/Win32Helper.h"
 
 class Pixel
 {

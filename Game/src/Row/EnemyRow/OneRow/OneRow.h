@@ -1,10 +1,9 @@
 #pragma once
-#include "Vehicle.h"
-#include "Animal.h"
-#include "Define.h"
+#include "EntityInRow/Vehicle.h"
+#include "EntityInRow/Animal.h"
+#include "../../../ConstantAndDefine/Define.h"
 
 #include <vector>
-//#include <ctime>
 #include <cstdlib>
 
 class OneRow

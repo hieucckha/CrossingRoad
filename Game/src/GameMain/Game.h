@@ -1,23 +1,14 @@
 #pragma once
 #pragma warning( disable : 4018 )
 
-//#include "Animal.h"
-//#include "Vehicle.h"
-#include "Player.h"
-#include "EnemyRow.h"
-#include "Scene.h"
-#include "Define.h"
-#include "Win32Helper.h"
+#include "../Row/EnemyRow/EnemyRow.h"
+#include "../Row/Player/Player.h"
+#include "../SceneAndPoint2D/Scene.h"
+#include "../ConstantAndDefine/Define.h"
+#include "../WindowsConsole/Win32Helper.h"
 
-//#include "Windows.h"
-//#include <iostream>
-//#include <thread>
-//#include <vector>
-//#include <cstring>
-//#include <cstdio>
 #include <conio.h>
 #include <fstream>
-//#include <cctype>
 
 class Game
 {
@@ -32,7 +23,7 @@ private:
 	// Will draw and show to console
 	Scene theScene_;
 
-
+private:
 	int inputKey()
 	{
 		if (_kbhit())
@@ -40,8 +31,7 @@ private:
 			int key = _getch();
 
 			return key;
-		}
-		else
+		} else
 		{
 			return -1;
 		}
@@ -50,7 +40,7 @@ private:
 	{
 		// If folder data not exist
 		if (!dir_exists("./data/"))
-			CreateDirectoryA("./data/", NULL);
+			CreateDirectoryA("./data/", nullptr);
 
 		std::string path = "./data/" + fileName + ".bin";
 		std::ofstream os(path, std::ios::out | std::ios::binary);
@@ -78,7 +68,7 @@ private:
 		for (auto& mem : enemyRow_.getListRow())
 		{
 			int tmpInt = 0;
-			bool tmpBool = 0;
+			bool tmpBool = false;
 			size_t numEnemy = mem->getEnemyList().size();
 			os.write(reinterpret_cast<char*>(&numEnemy), sizeof(numEnemy));
 
@@ -194,13 +184,13 @@ private:
 			int type = 0;
 			is.read(reinterpret_cast<char*>(&type), sizeof(type));
 
-			bool linearRandom = 0;
+			bool linearRandom = false;
 			is.read(reinterpret_cast<char*>(&linearRandom), sizeof(linearRandom));
 
-			bool direction = 0;
+			bool direction = false;
 			is.read(reinterpret_cast<char*>(&direction), sizeof(direction));
 
-			bool isRedLight = 0;
+			bool isRedLight = false;
 			is.read(reinterpret_cast<char*>(&isRedLight), sizeof(isRedLight));
 
 			int redLightTime = 0;
@@ -227,6 +217,10 @@ public:
 	}
 	~Game()
 	{
+		theScene_.drawExitGame();
+		theScene_.showScene();
+
+		setConsoleColor(BACKGROUND_BLACK | FOREGROUND_WHITE);
 	}
 
 	void Menu()
@@ -234,24 +228,32 @@ public:
 		unsigned int tick = 0;
 
 		int choose = 0;
+
+		int color = rand() % 16;
 		while (true)
 		{
 			theScene_.drawAllWhite();
-			theScene_.drawMenu(choose);
+			theScene_.drawMenu(choose, color);
 			theScene_.showScene();
 
 			switch (inputKey())
 			{
 			case 'w':
 				if (choose > 0)
+				{
+					color = rand() % 16;
 					choose--;
-				theScene_.drawMenu(choose);
+				}
+				theScene_.drawMenu(choose, color);
 				theScene_.showScene();
 				break;
 			case 's':
-				if (choose < 3)
+				if (choose < 4)
+				{
+					color = rand() % 16;
 					choose++;
-				theScene_.drawMenu(choose);
+				}
+				theScene_.drawMenu(choose, color);
 				theScene_.showScene();
 				break;
 			case 13:
@@ -272,6 +274,9 @@ public:
 				// Setting
 				case 2:
 					runSetting();
+					break;
+				case 3:
+					runCredit();
 					break;
 				// Quit
 				default:
@@ -375,8 +380,7 @@ public:
 				}
 
 				theScene_.showScene();
-			}
-			else
+			} else
 			{
 				theScene_.drawBorder();
 				theScene_.drawLevelAndInfo(level_);
@@ -413,8 +417,7 @@ public:
 					{
 						if (choose > 0)
 							choose--;
-					}
-					else if (tmp == 's')
+					} else if (tmp == 's')
 					{
 						if (choose < 1)
 							choose++;
@@ -480,48 +483,6 @@ public:
 				tick_++;
 		}
 	}
-	void runSaveGame(unsigned int tick)
-	{
-		g_isPause = true;
-		std::string fileName = "";
-
-		theScene_.drawSaveFile(fileName);
-		theScene_.showScene();
-
-		while (true)
-		{
-			if (_kbhit())
-			{
-				int tmp = _getch();
-
-				// Backspace
-				if (tmp == '\b')
-				{
-					if (fileName.size() > 0)
-						fileName.pop_back();
-				}
-				// ESC -> return to game
-				else if (tmp == 27)
-				{
-					return;
-				}
-				// Enter -> Save file
-				else if (tmp == 13)
-				{
-					SaveFile(fileName, tick);
-					return;
-				}
-				else
-				{
-					if (fileName.length() <= 20)
-						fileName.push_back(tmp);
-				}
-
-				theScene_.drawSaveFile(fileName);
-				theScene_.showScene();
-			}
-		}
-	}
 	// Return current tick
 	unsigned int runLoadGame(const std::string folder)
 	{
@@ -544,8 +505,7 @@ public:
 				{
 					if (choose > 0)
 						choose--;
-				}
-				else if (tmp == 's' && nListFile != 0)
+				} else if (tmp == 's' && nListFile != 0)
 				{
 					// 1 for index and 1 for check
 					if (choose < nListFile - 1)
@@ -584,13 +544,11 @@ public:
 			{
 				if (choose > 0)
 					choose--;
-			}
-			else if (tmp == 's')
+			} else if (tmp == 's')
 			{
 				if (choose < 0)
 					choose++;
-			}
-			else if (tmp == 13)
+			} else if (tmp == 13)
 			{
 				if (choose == 0)
 				{
@@ -605,6 +563,66 @@ public:
 
 			theScene_.drawSetting();
 			theScene_.showScene();
+		}
+	}
+	void runCredit()
+	{
+		theScene_.drawCredit();
+		theScene_.showScene();
+
+		while (true)
+		{
+			int tmp = _getch();
+
+			// ESC
+			if (tmp == 27)
+			{
+				return;
+			}
+
+			theScene_.drawCredit();
+			theScene_.showScene();
+		}
+	}
+	void runSaveGame(unsigned int tick)
+	{
+		g_isPause = true;
+		std::string fileName;
+
+		theScene_.drawSaveFile(fileName);
+		theScene_.showScene();
+
+		while (true)
+		{
+			if (_kbhit())
+			{
+				int tmp = _getch();
+
+				// Backspace
+				if (tmp == '\b')
+				{
+					if (fileName.size() > 0)
+						fileName.pop_back();
+				}
+				// ESC -> return to game
+				else if (tmp == 27)
+				{
+					return;
+				}
+				// Enter -> Save file
+				else if (tmp == 13)
+				{
+					SaveFile(fileName, tick);
+					return;
+				} else
+				{
+					if (fileName.length() <= 20)
+						fileName.push_back(tmp);
+				}
+
+				theScene_.drawSaveFile(fileName);
+				theScene_.showScene();
+			}
 		}
 	}
 };

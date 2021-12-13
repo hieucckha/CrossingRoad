@@ -1,6 +1,6 @@
 #pragma once
-#include "OneRow.h"
-#include "Define.h"
+#include "OneRow/OneRow.h"
+#include "../../ConstantAndDefine/Define.h"
 
 #include <vector>
 class EnemyRow

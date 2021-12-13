@@ -1,8 +1,8 @@
-#include "Game.h"
+#include "GameMain/Game.h"
 
 #include <iostream>
 #include <stdlib.h>
-#include <time.h>
+#include <ctime>
 
 Game* game;
 

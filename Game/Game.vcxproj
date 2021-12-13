@@ -19,34 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animal.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyRow.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Pixel.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Point2D.cpp" />
-    <ClCompile Include="OneRow.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SpritesModel.cpp" />
-    <ClCompile Include="Vehicle.cpp" />
-    <ClCompile Include="Win32Helper.cpp" />
+    <ClCompile Include="src\Row\EnemyRow\OneRow\EntityInRow\Animal.cpp" />
+    <ClCompile Include="src\Row\EnemyRow\OneRow\EntityInRow\Enemy.cpp" />
+    <ClCompile Include="src\Row\EnemyRow\EnemyRow.cpp" />
+    <ClCompile Include="src\GameMain\Game.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\SceneAndPoint2D\Pixel.cpp" />
+    <ClCompile Include="src\Row\Player\Player.cpp" />
+    <ClCompile Include="src\SceneAndPoint2D\Point2D.cpp" />
+    <ClCompile Include="src\Row\EnemyRow\OneRow\OneRow.cpp" />
+    <ClCompile Include="src\SceneAndPoint2D\Scene.cpp" />
+    <ClCompile Include="src\SceneAndPoint2D\SpritesModel.cpp" />
+    <ClCompile Include="src\Row\EnemyRow\OneRow\EntityInRow\Vehicle.cpp" />
+    <ClCompile Include="src\WindowsConsole\Win32Helper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animal.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyRow.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Define.h" />
-    <ClInclude Include="Pixel.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Point2D.h" />
-    <ClInclude Include="OneRow.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SpritesModel.h" />
-    <ClInclude Include="Vehicle.h" />
-    <ClInclude Include="Win32Helper.h" />
+    <ClInclude Include="src\Row\EnemyRow\OneRow\EntityInRow\Animal.h" />
+    <ClInclude Include="src\Row\EnemyRow\OneRow\EntityInRow\Enemy.h" />
+    <ClInclude Include="src\Row\EnemyRow\EnemyRow.h" />
+    <ClInclude Include="src\GameMain\Game.h" />
+    <ClInclude Include="src\ConstantAndDefine\Define.h" />
+    <ClInclude Include="src\SceneAndPoint2D\Pixel.h" />
+    <ClInclude Include="src\Row\Player\Player.h" />
+    <ClInclude Include="src\SceneAndPoint2D\Point2D.h" />
+    <ClInclude Include="src\Row\EnemyRow\OneRow\OneRow.h" />
+    <ClInclude Include="src\SceneAndPoint2D\Scene.h" />
+    <ClInclude Include="src\SceneAndPoint2D\SpritesModel.h" />
+    <ClInclude Include="src\Row\EnemyRow\OneRow\EntityInRow\Vehicle.h" />
+    <ClInclude Include="src\WindowsConsole\Win32Helper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -102,15 +102,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

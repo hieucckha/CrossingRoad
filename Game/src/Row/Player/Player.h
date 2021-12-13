@@ -1,10 +1,10 @@
 #pragma once
-#include "Point2D.h"
-#include "Vehicle.h"
-#include "Animal.h"
-#include "EnemyRow.h"
+#include "../../SceneAndPoint2D/Point2D.h"
+//#include "Animal.h"
+//#include "Vehicle.h"
+#include "../EnemyRow/EnemyRow.h"
 //#include "Pixel.h"
-#include "Define.h"
+#include "../../ConstantAndDefine/Define.h"
 
 #include <vector>
 
@@ -22,9 +22,7 @@ public:
 	{
 		coord_.setBoth(52, 37);
 	}
-	~Player()
-	{
-	}
+	~Player() = default;
 
 	void reset()
 	{
