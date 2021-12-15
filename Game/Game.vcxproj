@@ -25,7 +25,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pixel.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Row.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="Win32Helper.cpp" />
   </ItemGroup>
@@ -66,7 +68,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">

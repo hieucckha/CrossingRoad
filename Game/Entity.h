@@ -16,65 +16,25 @@ protected:
 	//Clockwise
 	SHORT bound[4];
 public:
-	Entity()
-	{
-		coord.X = 0;
-		coord.Y = 0;
-		sprtRight = nullptr;
-		bound[0] = 0;
-		bound[1] = 0;
-		bound[2] = 0;
-		bound[3] = 0;
-	}
-	~Entity()
-	{
-		delete sprtRight;
-	}
+	Entity();
+	
+	~Entity();
 
-	SHORT getX() const
-	{
-		return coord.X;
-	}
+	SHORT getX() const;
 
-	SHORT getY() const
-	{
-		return coord.Y;
-	}
+	SHORT getY() const;
 
-	virtual void move(int x, int y)
-	{
-		coord.X = x;
-		coord.Y = y;
-	}
+	virtual void move(int x, int y);
+	
+	virtual SHORT getSpriteHeight() const;
 
-	virtual SHORT getSpriteHeight() const
-	{
-		return sprtRight->getHeight();
-	}
+	virtual SHORT getSpriteWidth() const;
+	
+	SHORT getBound(int index) const;
 
-	virtual SHORT getSpriteWidth() const
-	{
-		return sprtRight->getWidth();
-	}
+	virtual Sprite getSprite(bool isRight = 0) const;
 
-	SHORT getBound(int index) const
-	{
-		return bound[index];
-	}
-
-	virtual Sprite getSprite(bool isRight = 0) const 
-	{
-		return (isRight)? *sprtRight : *sprtLeft;
-	}
-
-	void recalBound()
-	{
-		//Clockwise order
-		bound[0] = (getSpriteHeight() - 1) / 2;
-		bound[1] = floor((getSpriteWidth() - 1) / 2);
-		bound[2] = getSpriteHeight() / 2;
-		bound[3] = ceil((getSpriteWidth()) / 2);
-	}
+	void recalBound();
 };
 
 #endif //_ENTITY

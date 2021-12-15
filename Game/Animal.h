@@ -19,22 +19,15 @@ private:
 	static Sprite* birdSprtRight;
 	static Sprite* birdSprtLeft;
 public:
-	Bird(int x, int y)
-	{
-		move(x, y);
-		recalBound();
-	}
+	Bird(int x, int y);
 
-	~Bird()
-	{
-		delete birdSprtRight;
-		delete birdSprtLeft;
-	}
+	~Bird();
 
 	Sprite getSprite(bool isRight = 0) const override
 	{
 		return (isRight) ? *birdSprtRight : *birdSprtLeft;
 	}
+
 	SHORT getSpriteHeight() const override
 	{
 		return birdSprtRight->getHeight();
@@ -52,17 +45,9 @@ private:
 	static Sprite* dinoSprtRight;
 	static Sprite* dinoSprtLeft;
 public:
-	Dinosaur(int x, int y)
-	{
-		move(x, y);
-		recalBound();
-	}
+	Dinosaur(int x, int y);
 
-	~Dinosaur()
-	{
-		delete dinoSprtRight;
-		delete dinoSprtLeft;
-	}
+	~Dinosaur();
 
 	Sprite getSprite(bool isRight = 0) const override
 	{

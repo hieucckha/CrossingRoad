@@ -19,17 +19,9 @@ private:
 	static Sprite* carSprtRight;
 	static Sprite* carSprtLeft;
 public:
-	Car(int x, int y)
-	{
-		move(x, y);
-		recalBound();
-	}
+	Car(int x, int y);
 
-	~Car()
-	{
-		delete carSprtRight;
-		delete carSprtLeft;
-	}
+	~Car();
 
 	Sprite getSprite(bool isRight = 0) const override
 	{
@@ -53,17 +45,9 @@ private:
 	static Sprite* truckSprtLeft;
 
 public:
-	Truck(int x, int y)
-	{
-		move(x, y);
-		recalBound();
-	}
+	Truck(int x, int y);
 
-	~Truck()
-	{
-		delete truckSprtRight;
-		delete truckSprtLeft;
-	}
+	~Truck();
 
 	Sprite getSprite(bool isRight = 0) const override
 	{

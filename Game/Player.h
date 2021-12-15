@@ -16,132 +16,31 @@ private:
 
 public:
 	// Maybe change this the default location
-	Player()
-	{
-		coord.X = 39;
-		coord.Y = 27;
-		isDead = false;
-		recalBound();
-	}
+	Player();
 
-	~Player()
-	{
-		delete playerSprt;
-	}
+	~Player();
 
-	void move(int x, int y)
-	{
-		coord.X = x;
-		coord.Y = y;
-	}
+	void move(int x, int y);
 
-	void setState(bool state)
-	{
-		isDead = state;
-	}
+	void setState(bool state);
 
-	int getX() const
-	{
-		return coord.X;
-	}
-	int getY() const
-	{
-		return coord.Y;
-	}
+	int getX() const;
 
-	void Up()
-	{
-		if (coord.Y >= 0)
-		{
-			if (coord.Y == 27)
-				coord.Y -= 4;
-			else
-				coord.Y -= 5;
-		}
-	}
-	void Left()
-	{
-		if (coord.X > 3)
-		{
-			coord.X--;
-		}
-	}
-	void Down()
-	{
-		if (coord.Y < 28)
-		{
-			if (coord.Y == 23)
-				coord.Y += 4;
-			else if (coord.Y != 27)
-				coord.Y += 5;
-		}
-	}
-	void Right()
-	{
-		if (coord.X < 106)
-		{
-			coord.X++;
-		}
-	}
+	int getY() const;
 
-	int isImpact(std::vector<Row*>& listRow) const
-	{
-		auto playerCoordY = this->getY();
-		unsigned int inRow = 0;
+	void Up();
 
-		if (playerCoordY == 3 || playerCoordY == 27)
-		{
-			return 0;
-		} else
-		{
-			inRow = (playerCoordY - 3) / 5 - 1;
-		}
+	void Left();
 
+	void Down();
+	
+	void Right();
 
-		Row* row = listRow[inRow];
+	int isImpact(std::vector<Row*>& listRow) const;
 
-		unsigned int typeOfEnemy = row->getType();
-		std::vector<Entity*> listEnemy = row->GetList();
+	bool isAtFinishLine() const;
 
-		for (auto& mem : listEnemy)
-		{
-			auto coordXEnemy = mem->getX();
-
-			// Enemy -> Player
-			if (coordXEnemy < this->getX())
-			{
-				// Right | Left
-				if (coordXEnemy + mem->getBound(1) >= this->getX() - this->getBound(3))
-					return typeOfEnemy + 1;
-				else
-					continue;
-			}
-
-			if (coordXEnemy == this->getX())
-				return typeOfEnemy + 1;
-
-			// Player -> Enemy
-			if (coordXEnemy > this->getX())
-			{
-				if (this->getX() + this->getBound(1) >= coordXEnemy - mem->getBound(3))
-					return typeOfEnemy + 1;
-				else
-					continue;
-			}
-		}
-
-		return 0;
-	}
-
-	bool isAtFinishLine() const
-	{
-		return (coord.Y <= 5) ? true : false;
-	}
-
-	bool isPlayerDead() const
-	{
-		return !isDead;
-	}
+	bool isPlayerDead() const;
 
 	Sprite getSprite(bool isRight = 0) const override
 	{
