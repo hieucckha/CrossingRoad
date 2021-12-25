@@ -217,10 +217,10 @@ public:
 	}
 	~Game()
 	{
-		theScene_.drawExitGame();
+		theScene_.DrawExitGame();
 		theScene_.showScene();
 
-		setConsoleColor(BACKGROUND_BLACK | FOREGROUND_WHITE);
+		setConsoleColor(BG_BLACK | FG_WHITE);
 	}
 
 	void Menu()
@@ -232,8 +232,8 @@ public:
 		int color = rand() % 16;
 		while (true)
 		{
-			theScene_.drawAllWhite();
-			theScene_.drawMenu(choose, color);
+			//theScene_.drawAllWhite();
+			theScene_.DrawMenu(choose, color);
 			theScene_.showScene();
 
 			switch (inputKey())
@@ -244,7 +244,7 @@ public:
 					color = rand() % 16;
 					choose--;
 				}
-				theScene_.drawMenu(choose, color);
+				theScene_.DrawMenu(choose, color);
 				theScene_.showScene();
 				break;
 			case 's':
@@ -253,7 +253,7 @@ public:
 					color = rand() % 16;
 					choose++;
 				}
-				theScene_.drawMenu(choose, color);
+				theScene_.DrawMenu(choose, color);
 				theScene_.showScene();
 				break;
 			case 13:
@@ -294,9 +294,9 @@ public:
 		// 1 While loop done -> 1 tick
 		unsigned int tick_ = tick;
 
-		theScene_.drawBorder();
-		theScene_.drawLevelAndInfo(level_);
-		theScene_.drawPlayer(this->player_);
+		theScene_.DrawBorder();
+		theScene_.DrawLevelAndInfo(level_);
+		theScene_.DrawPlayer(this->player_);
 		theScene_.showScene();
 
 		while (true)
@@ -364,17 +364,17 @@ public:
 			// Draw 
 			if (!g_isPause)
 			{
-				theScene_.drawBorder();
-				theScene_.drawLevelAndInfo(level_);
-				theScene_.drawIsPause(g_isPause);
+				theScene_.DrawBorder();
+				theScene_.DrawLevelAndInfo(level_);
+				theScene_.DrawIsPause(g_isPause);
 
-				theScene_.drawPlayer(this->player_);
+				theScene_.DrawPlayer(this->player_);
 				if (player_.checkCollistion(this->enemyRow_, playerRow_))
 					player_.setStateFalse();
 				for (int i = 0; i < MAXIMUN_ENEMY_ROW; ++i)
 				{
 					enemyRow_.update(tick_, this->playerRow_, i, level_);
-					theScene_.drawOneRow(this->enemyRow_, i);
+					theScene_.DrawOneRow(this->enemyRow_, i);
 					if (player_.checkCollistion(this->enemyRow_, playerRow_))
 						player_.setStateFalse();
 				}
@@ -382,13 +382,13 @@ public:
 				theScene_.showScene();
 			} else
 			{
-				theScene_.drawBorder();
-				theScene_.drawLevelAndInfo(level_);
-				theScene_.drawIsPause(g_isPause);
+				theScene_.DrawBorder();
+				theScene_.DrawLevelAndInfo(level_);
+				theScene_.DrawIsPause(g_isPause);
 
-				theScene_.drawPlayer(this->player_);
+				theScene_.DrawPlayer(this->player_);
 				for (int i = 0; i < MAXIMUN_ENEMY_ROW; ++i)
-					theScene_.drawOneRow(this->enemyRow_, i);
+					theScene_.DrawOneRow(this->enemyRow_, i);
 
 				theScene_.showScene();
 			}
@@ -398,7 +398,7 @@ public:
 			{
 				for (int i = 0; i < 10; ++i)
 				{
-					theScene_.drawDeadScene(i);
+					theScene_.DrawDeadScene(i);
 					theScene_.showScene();
 					Sleep(300);
 				}
@@ -406,7 +406,7 @@ public:
 				int choose = 0;
 
 				// Choose to continue play
-				theScene_.drawContinueGame(choose);
+				theScene_.DrawContinueGame(choose);
 				theScene_.showScene();
 
 				while (true)
@@ -442,7 +442,7 @@ public:
 						}
 					}
 
-					theScene_.drawContinueGame(choose);
+					theScene_.DrawContinueGame(choose);
 					theScene_.showScene();
 				}
 
@@ -453,9 +453,9 @@ public:
 
 				enemyRow_.setLevel(level_);
 
-				theScene_.drawBorder();
-				theScene_.drawLevelAndInfo(level_);
-				theScene_.drawPlayer(this->player_);
+				theScene_.DrawBorder();
+				theScene_.DrawLevelAndInfo(level_);
+				theScene_.DrawPlayer(this->player_);
 				theScene_.showScene();
 				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 				player_.setStateTrue();
@@ -472,9 +472,9 @@ public:
 
 				enemyRow_.setLevel(level_);
 
-				theScene_.drawBorder();
-				theScene_.drawLevelAndInfo(level_);
-				theScene_.drawPlayer(this->player_);
+				theScene_.DrawBorder();
+				theScene_.DrawLevelAndInfo(level_);
+				theScene_.DrawPlayer(this->player_);
 				theScene_.showScene();
 				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 			}
@@ -492,7 +492,7 @@ public:
 		size_t nListFile = listFile.size();
 		int choose = 0;
 
-		theScene_.drawLoadFile(listFile, choose);
+		theScene_.DrawLoadFile(listFile, choose);
 		theScene_.showScene();
 
 		while (true)
@@ -524,7 +524,7 @@ public:
 					return -1;
 				}
 
-				theScene_.drawLoadFile(listFile, choose);
+				theScene_.DrawLoadFile(listFile, choose);
 				theScene_.showScene();
 			}
 		}
@@ -533,7 +533,7 @@ public:
 	{
 		int choose = 0;
 
-		theScene_.drawSetting();
+		theScene_.DrawSetting();
 		theScene_.showScene();
 
 		while (true)
@@ -561,13 +561,13 @@ public:
 				return;
 			}
 
-			theScene_.drawSetting();
+			theScene_.DrawSetting();
 			theScene_.showScene();
 		}
 	}
 	void runCredit()
 	{
-		theScene_.drawCredit();
+		theScene_.DrawCredit();
 		theScene_.showScene();
 
 		while (true)
@@ -580,7 +580,7 @@ public:
 				return;
 			}
 
-			theScene_.drawCredit();
+			theScene_.DrawCredit();
 			theScene_.showScene();
 		}
 	}
@@ -589,7 +589,7 @@ public:
 		g_isPause = true;
 		std::string fileName;
 
-		theScene_.drawSaveFile(fileName);
+		theScene_.DrawSaveFile(fileName);
 		theScene_.showScene();
 
 		while (true)
@@ -620,7 +620,7 @@ public:
 						fileName.push_back(tmp);
 				}
 
-				theScene_.drawSaveFile(fileName);
+				theScene_.DrawSaveFile(fileName);
 				theScene_.showScene();
 			}
 		}

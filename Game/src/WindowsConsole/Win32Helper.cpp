@@ -21,7 +21,6 @@ void setConsoleColor(unsigned char color)
 	static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	std::cout.flush();
 	SetConsoleTextAttribute(hOut, color);
-
 }
 
 void GetWindowBufferSize(int& row, int& col)

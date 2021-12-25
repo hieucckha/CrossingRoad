@@ -7,15 +7,21 @@
 #include "../Row/EnemyRow/EnemyRow.h"
 
 #include <string>
+#include <chrono>
 
 class Scene
 {
 private:
-	int width_, height_;
-	Pixel** thePrevScene_, ** theScene_;
+	int _width, _height;
+	Pixel** _prevScene, ** _currScene;
 
 	SpritesModel model_;
 
+	std::chrono::high_resolution_clock::time_point _startOfSecond;
+	unsigned int _fps;
+	unsigned int _fpsCount;
+
+private:
 	// Not const char*
 	void cusStrcpy(int coordX, int coordY, char* model, int size)
 	{
@@ -23,13 +29,13 @@ private:
 		// Only copy in the map
 		for (int i = 0; i < size; ++i)
 			if ((coordX + i > MapLeftCol && coordX + i < MapRightCol) && (coordY > MapTopRow && coordY < MapBottomRow))
-				theScene_[coordY][coordX + i].setContent(model[i]);
+				_currScene[coordY][coordX + i]._content = model[i];
 	}
 	void cusStrcpyNInMap(int coordX, int coordY, char* model, int size)
 	{
 		for (int i = 0; i < size; ++i)
-			if ((coordX + i >= 0 && coordX + i < width_) && (coordY >= 0 && coordY < height_))
-				theScene_[coordY][coordX + i].setContent(model[i]);
+			if ((coordX + i >= 0 && coordX + i < _width) && (coordY >= 0 && coordY < _height))
+				_currScene[coordY][coordX + i]._content = model[i];
 	}
 	// Const char*
 	void cusStrcpy(int coordX, int coordY, const char* model, int size)
@@ -38,91 +44,120 @@ private:
 		// Only copy in the map
 		for (int i = 0; i < size; ++i)
 			if ((coordX + i > MapLeftCol && coordX + i < MapRightCol) && (coordY > MapTopRow && coordY < MapBottomRow))
-				theScene_[coordY][coordX + i].setContent(model[i]);
+				_currScene[coordY][coordX + i]._content = model[i];
 	}
 	void cusStrcpyNInMap(int coordX, int coordY, const char* model, int size)
 	{
 		for (int i = 0; i < size; ++i)
-			if ((coordX + i >= 0 && coordX + i < width_) && (coordY >= 0 && coordY < height_))
-				theScene_[coordY][coordX + i].setContent(model[i]);
+			if ((coordX + i >= 0 && coordX + i < _width) && (coordY >= 0 && coordY < _height))
+				_currScene[coordY][coordX + i]._content = model[i];
 	}
 
 public:
 	// Init two buffer and whitespace to it
 	Scene()
 	{
-		GetWindowBufferSize(height_, width_);
-		theScene_ = new Pixel * [height_];
-		for (int i = 0; i < height_; ++i)
-			theScene_[i] = new Pixel[width_];
+		std::ios_base::sync_with_stdio(false);
 
-		thePrevScene_ = new Pixel * [height_];
-		for (int i = 0; i < height_; ++i)
-			thePrevScene_[i] = new Pixel[width_];
+		GetWindowBufferSize(_height, _width);
+		_currScene = new Pixel * [_height];
+		for (int i = 0; i < _height; ++i)
+			_currScene[i] = new Pixel[_width];
+
+		_prevScene = new Pixel * [_height];
+		for (int i = 0; i < _height; ++i)
+			_prevScene[i] = new Pixel[_width];
+
+		_startOfSecond = std::chrono::high_resolution_clock::now();
+		_fps = 0;
+		_fpsCount = 0;
 	}
 	~Scene()
 	{
-		for (int i = 0; i < height_; ++i)
+		for (int i = 0; i < _height; ++i)
 		{
-			delete[] thePrevScene_[i];
-			delete[] theScene_[i];
+			delete[] _prevScene[i];
+			delete[] _currScene[i];
 		}
 
-		delete[] thePrevScene_;
-		delete[] theScene_;
+		delete[] _prevScene;
+		delete[] _currScene;
 	}
-	// Reset all pixel to space char and clear the color
-	void drawAllWhite()
-	{
-		for (int i = 0; i < height_; ++i)
-			for (int j = 0; j < width_; ++j)
-			{
-				if (j == width_ - 1)
-					theScene_[i][j].setContent('\n');
-				else
-					theScene_[i][j].setContent(' ');
+	//// Reset all pixel to space char and clear the color
+	//void drawAllWhite()
+	//{
+	//	for (int i = 0; i < _height; ++i)
+	//		for (int j = 0; j < _width; ++j)
+	//		{
+	//			if (j == _width - 1)
+	//				_currScene[i][j]._content = '\n';
+	//			else
+	//			{
+	//				// #TODO This 
+	//				_currScene[i][j]._content = ' ';
+	//			}
 
-				theScene_[i][j].setForeGround(FOREGROUND_WHITE);
-				theScene_[i][j].setBackground(FOREGROUND_BLACK);
-			}
-	}
-	// Reset all pixel to space char
-	void drawContentWhite()
+	//			// #TODO this
+	//			_currScene[i][j]._bafoGround |= FG_WHITE;
+	//			_currScene[i][j]._bafoGround |= FG_BLACK;
+	//		}
+	//}
+	//// Reset all pixel to space char
+	//void drawContentWhite()
+	//{
+	//	for (int i = 0; i < _height; ++i)
+	//		for (int j = 0; j < _width; ++j)
+	//		{
+	//			if (j == _width - 1)
+	//				_currScene[i][j]._content = '\n';
+	//			else
+	//				_currScene[i][j]._content = ' ';
+	//		}
+	//}
+	void ClearScene()
 	{
-		for (int i = 0; i < height_; ++i)
-			for (int j = 0; j < width_; ++j)
-			{
-				if (j == width_ - 1)
-					theScene_[i][j].content_ = '\n';
-				else
-					theScene_[i][j].content_ = ' ';
-			}
-	}
-	// Draw \n to the right edge of theScene_
-	void drawNewLineAtEnd()
-	{
-		for (int i = 0; i < height_; ++i)
-			theScene_[i][width_ - 1].setContent('\n');
-	}
-
-	void drawBorder()
-	{
-		for (int i = 0; i < height_; ++i)
+		// 0x20 is (Space character) and 0x07 is (BLACK_BACKGROUND | WHITE_FOREGROUND)
+		// Because little endian so must to swap to 0x0720
+		for (int row = 0; row < _height; ++row)
 		{
-			for (int j = 0; j < width_; ++j)
+			unsigned short* p = reinterpret_cast<unsigned short*>(_currScene[row]);
+
+			for (int col = 0; col < _width; ++col)
+				*(p + col) = 0x0720;
+		}
+	}
+
+	//// Draw \n to the right edge of theScene_
+	//void DrawNewLineAtEnd()
+	//{
+	//	for (int i = 0; i < _height; ++i)
+	//		_currScene[i][_width - 1]._content = '\n';
+	//}
+
+	void DrawBorder()
+	{
+		for (int i = 0; i < _height; ++i)
+		{
+			for (int j = 0; j < _width; ++j)
 			{
 				if ((i == MapTopRow || i == MapBottomRow - 1) && (j >= MapLeftCol && j <= MapRightCol))
-					theScene_[i][j].setContent('#');
+					_currScene[i][j]._content = '#';
 				else if (j == MapLeftCol || j == MapRightCol)
-					theScene_[i][j].setContent('#');
+					_currScene[i][j]._content = '#';
 			}
 		}
 	}
-	void drawLevelAndInfo(int level)
+	void DrawLevelAndInfo(int level)
 	{
+		char fpsStr[12];
+		for (auto& chr : fpsStr)
+			chr = ' ';
+		snprintf(fpsStr, 12, "- FPS: %d", _fps);
+		cusStrcpyNInMap(115, 5, fpsStr, 11);
+
 		char levelInfo[17];
-		for (char& i : levelInfo)
-			i = ' ';
+		for (char& chr : levelInfo)
+			chr = ' ';
 		snprintf(levelInfo, 17, "- LEVEL: %i", level);
 		cusStrcpyNInMap(115, 7, levelInfo, 17);
 
@@ -141,26 +176,26 @@ public:
 		cusStrcpyNInMap(115, 19, function[4], 15);
 		cusStrcpyNInMap(115, 20, function[5], 20);
 	}
-	void drawIsPause(bool isPause)
+	void DrawIsPause(bool isPause)
 	{
 		const char* isPauseStr[] = { "[X] Pause", "[ ] Not Pause" };
 		if (isPause)
 		{
 			cusStrcpyNInMap(115, 22, isPauseStr[0], 9);
 			for (int i = 0; i < 9; ++i)
-				theScene_[22][115 + i].background_ = BACKGROUND_RED;
+				_currScene[22][115 + i]._bafoGround |= BG_RED;
 		} else
 		{
 			cusStrcpyNInMap(115, 22, isPauseStr[1], 13);
 			for (int i = 0; i < 13; ++i)
-				theScene_[22][115 + i].background_ = BACKGROUND_GREEN;
+				_currScene[22][115 + i]._bafoGround |= BG_GREEN;
 		}
 	}
 
-	void drawMenu(int choose, int color)
+	void DrawMenu(int choose, unsigned char color)
 	{
-		drawAllWhite();
-		drawNewLineAtEnd();
+		/*drawAllWhite();
+		DrawNewLineAtEnd();*/
 
 		cusStrcpyNInMap(20, 6, R"(_________                         _____                    ________             _________)", 90);
 		cusStrcpyNInMap(20, 7, R"(__  ____/____________________________(_)_____________ _    ___  __ \\___________ ______ /)", 90);
@@ -173,7 +208,7 @@ public:
 		{
 			for (int col = 0; col < 90; ++col)
 			{
-				theScene_[row][20 + col].setForeGround(color);
+				_currScene[row][20 + col]._bafoGround = BG_DEFAULT | color;
 			}
 		}
 
@@ -187,27 +222,27 @@ public:
 		{
 		case 0:
 			for (int i = 0; i < 11; ++i)
-				theScene_[15][36 + i].setForeGround(FOREGROUND_BLUE);
+				_currScene[15][36 + i]._bafoGround = BG_DEFAULT | FG_BLUE;
 			break;
 		case 1:
 			for (int i = 0; i < 12; ++i)
-				theScene_[16][36 + i].setForeGround(FOREGROUND_BLUE);
+				_currScene[16][36 + i]._bafoGround = BG_DEFAULT | FG_BLUE;
 			break;
 		case 2:
 			for (int i = 0; i < 10; ++i)
-				theScene_[17][36 + i].setForeGround(FOREGROUND_BLUE);
+				_currScene[17][36 + i]._bafoGround = BG_DEFAULT | FG_BLUE;
 			break;
 		case 3:
 			for (int i = 0; i < 9; ++i)
-				theScene_[18][36 + i].setForeGround(FOREGROUND_BLUE);
+				_currScene[18][36 + i]._bafoGround = BG_DEFAULT | FG_BLUE;
 			break;
 		default:
 			for (int i = 0; i < 7; ++i)
-				theScene_[19][36 + i].setForeGround(FOREGROUND_BLUE);
+				_currScene[19][36 + i]._bafoGround = BG_DEFAULT | FG_BLUE;
 			break;
 		}
 	}
-	void drawPlayer(Player player)
+	void DrawPlayer(Player player)
 	{
 		Point2D coord = player.getCoord();
 
@@ -221,7 +256,7 @@ public:
 		for (int rowOfModel = 0; rowOfModel < 4; ++rowOfModel)
 			cusStrcpy(coord.getX(), coord.getY() + rowOfModel, model_.PlayerMiddle_[rowOfModel], 5);
 	}
-	void drawOneRow(EnemyRow& enemyRow, int index)
+	void DrawOneRow(EnemyRow& enemyRow, int index)
 	{
 		OneRow* theRow = enemyRow.getListRow()[index];
 		// Right
@@ -229,9 +264,9 @@ public:
 		{
 			// Draw Light
 			if (theRow->getIsRedLight())
-				theScene_[2 + 5 * (theRow->getCurrentRow() - 1)][MapRightCol + 1].background_ = BACKGROUND_LIGHT_RED;
+				_currScene[2 + 5 * (theRow->getCurrentRow() - 1)][MapRightCol + 1]._bafoGround |= BG_LIGHT_RED;
 			else
-				theScene_[2 + 5 * (theRow->getCurrentRow() - 1)][MapRightCol + 1].background_ = BACKGROUND_LIGHT_GREEN;
+				_currScene[2 + 5 * (theRow->getCurrentRow() - 1)][MapRightCol + 1]._bafoGround |= BG_LIGHT_GREEN;
 			for (auto& mem : theRow->getEnemyList())
 			{
 				Point2D coord = mem->getCoord();
@@ -266,9 +301,9 @@ public:
 		{
 			// Draw Light
 			if (theRow->getIsRedLight())
-				theScene_[2 + 5 * (theRow->getCurrentRow() - 1)][MapLeftCol - 1].background_ = BACKGROUND_LIGHT_RED;
+				_currScene[2 + 5 * (theRow->getCurrentRow() - 1)][MapLeftCol - 1]._bafoGround |= BG_LIGHT_RED;
 			else
-				theScene_[2 + 5 * (theRow->getCurrentRow() - 1)][MapLeftCol - 1].background_ = BACKGROUND_LIGHT_GREEN;
+				_currScene[2 + 5 * (theRow->getCurrentRow() - 1)][MapLeftCol - 1]._bafoGround |= BG_LIGHT_GREEN;
 
 			for (auto& mem : theRow->getEnemyList())
 			{
@@ -302,7 +337,7 @@ public:
 		}
 	}
 
-	void drawSaveFile(std::string fileName)
+	void DrawSaveFile(std::string fileName)
 	{
 		cusStrcpyNInMap(40, 14, "- This is Save File", 19);
 
@@ -313,7 +348,7 @@ public:
 		cusStrcpyNInMap(40, 18, "- Press <Enter> to save", 23);
 		cusStrcpyNInMap(40, 19, "- Press <ESC> to go back", 24);
 	}
-	void drawLoadFile(std::vector<std::string> listFile, int choose)
+	void DrawLoadFile(std::vector<std::string> listFile, int choose)
 	{
 		cusStrcpyNInMap(40, 14, "- This is Save File", 19);
 
@@ -332,7 +367,7 @@ public:
 				if (i == choose)
 				{
 					for (int j = 0; j < fileName.length(); ++j)
-						theScene_[16 + i][40 + j].foreground_ = FOREGROUND_LIGHT_YELLOW;
+						_currScene[16 + i][40 + j]._bafoGround = BG_DEFAULT | FG_LIGHT_YELLOW;
 				}
 			}
 
@@ -341,12 +376,12 @@ public:
 		}
 	}
 
-	void drawDeadScene(int i)
+	void DrawDeadScene(int i)
 	{
 		std::string deadStr = "[*] This is the dead scene " + std::to_string(i);
 		cusStrcpyNInMap(50, 15, deadStr.c_str(), deadStr.length());
 	}
-	void drawContinueGame(int choose)
+	void DrawContinueGame(int choose)
 	{
 		const char* CapAndOption[] = { "Do you want to continue: ", "[*] Yes", "[*] No" };
 		cusStrcpyNInMap(50, 15, CapAndOption[0], 25);
@@ -356,14 +391,14 @@ public:
 		if (choose == 0)
 		{
 			for (int i = 0; i < 8; ++i)
-				theScene_[17][50 + i].background_ = BACKGROUND_LIGHT_PURPLE;
+				_currScene[17][50 + i]._bafoGround |= BG_LIGHT_PURPLE;
 		} else
 		{
 			for (int i = 0; i < 7; ++i)
-				theScene_[18][50 + i].background_ = BACKGROUND_LIGHT_PURPLE;
+				_currScene[18][50 + i]._bafoGround |= BG_LIGHT_PURPLE;
 		}
 	}
-	void drawSetting()
+	void DrawSetting()
 	{
 		cusStrcpyNInMap(50, 15, "- This is setting", 17);
 
@@ -371,18 +406,18 @@ public:
 		{
 			cusStrcpyNInMap(50, 17, "- Hard mode: [X]", 16);
 			for (int i = 0; i < 16; ++i)
-				theScene_[17][50 + i].background_ = BACKGROUND_YELLOW;
+				_currScene[17][50 + i]._bafoGround |= BG_YELLOW;
 		} else
 		{
 			cusStrcpyNInMap(50, 17, "- Hard mode: [ ]", 16);
 			for (int i = 0; i < 16; ++i)
-				theScene_[17][50 + i].background_ = BACKGROUND_BLUE;
+				_currScene[17][50 + i]._bafoGround |= BG_BLUE;
 		}
 
 		cusStrcpyNInMap(50, 19, "- Press <Enter> to toggle", 25);
 		cusStrcpyNInMap(50, 20, "- Press <ESC> to go back", 24);
 	}
-	void drawCredit()
+	void DrawCredit()
 	{
 		cusStrcpyNInMap(20, 6, R"(a'!   _,,_ a'!   _,,_     a'!   _,,_     )", 41);
 		cusStrcpyNInMap(20, 7, R"(  \\_/    \  \\_/    \      \\_/    \.-, )", 41);
@@ -391,12 +426,12 @@ public:
 
 		for (int row = 0; row < 4; ++row)
 			for (int col = 0; col < 41; ++col)
-				theScene_[6 + row][20 + col].setForeGround(rand() % 16);
+				_currScene[6 + row][20 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 
 		cusStrcpyNInMap(25, 10, R"(Credit image from here: https://ascii.co.uk/art/camel)", 53);
 
 		for (int col = 0; col < 53; ++col)
-			theScene_[10][25 + col].setForeGround(rand() % 16);
+			_currScene[10][25 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 
 		cusStrcpyNInMap(31, 15, R"(This game made by LacDaLacDa(hieucckha))", 39);
 		cusStrcpyNInMap(37, 16, R"(Have fun in coding :3)", 21);
@@ -405,15 +440,15 @@ public:
 		cusStrcpyNInMap(34, 19, "Press any key to change color", 29);
 
 		for (int col = 0; col < 29; ++col)
-			theScene_[19][34 + col].setForeGround(rand() % 16);
+			_currScene[19][34 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 
 		cusStrcpyNInMap(37, 20, "Press <ESC> to go back", 24);
 
 		for (int col = 0; col < 24; ++col)
-			theScene_[20][37 + col].setForeGround(rand() % 16);
+			_currScene[20][37 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 	}
 
-	void drawExitGame()
+	void DrawExitGame()
 	{
 		cusStrcpyNInMap(20, 6, R"(a'!   _,,_ a'!   _,,_     a'!   _,,_     )", 41);
 		cusStrcpyNInMap(20, 7, R"(  \\_/    \  \\_/    \      \\_/    \.-, )", 41);
@@ -422,62 +457,60 @@ public:
 
 		for (int row = 0; row < 4; ++row)
 			for (int col = 0; col < 41; ++col)
-				theScene_[6 + row][20 + col].setForeGround(rand() % 16);
+				_currScene[6 + row][20 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 
 		cusStrcpyNInMap(25, 10, R"(Credit image from here: https://ascii.co.uk/art/camel)", 53);
 
 		for (int col = 0; col < 53; ++col)
-			theScene_[10][25 + col].setForeGround(rand() % 16);
+			_currScene[10][25 + col]._bafoGround = BG_DEFAULT | rand() % 16;
 
 		cusStrcpyNInMap(31, 15, R"(This game made by LacDaLacDa(hieucckha))", 39);
 		cusStrcpyNInMap(37, 16, R"(Have fun in coding :3)", 21);
 	}
 
+	void SwapScene()
+	{
+		// int tmp = a;
+		// a = b;
+		// b = tmp;
+		Pixel** tmp = _prevScene;
+		_prevScene = _currScene;
+		_currScene = tmp;
+	}
+
+	void DoneFrame()
+	{
+		_fpsCount++;
+
+		std::chrono::duration<float> duration = std::chrono::high_resolution_clock::now() - _startOfSecond;
+		if (duration.count() > 1)
+		{
+			_startOfSecond = std::chrono::high_resolution_clock::now();
+			_fps = _fpsCount;
+			_fpsCount = 0;
+		}
+	}
+
 	void showScene()
 	{
-		for (int i = 0; i < height_; ++i)
+		for (int i = 0; i < _height; ++i)
 		{
-			for (int j = 0; j < width_; ++j)
+			for (int j = 0; j < _width; ++j)
 			{
-				/*if (theScene_[i][j].content_ == thePrevScene_[i][j].content_ &&
-					theScene_[i][j].foreground_ == thePrevScene_[i][j].foreground_)
-				{
-					continue;
-				} else if (theScene_[i][j].content_ != thePrevScene_[i][j].content_ &&
-					theScene_[i][j].foreground_ == thePrevScene_[i][j].foreground_)
-				{
-					GotoXY(j, i);
-					setConsoleColor(theScene_[i][j].getForeground());
-					std::cout << theScene_[i][j].content_;
-				} else if (theScene_[i][j].content_ == thePrevScene_[i][j].content_ &&
-					theScene_[i][j].foreground_ != thePrevScene_[i][j].foreground_)
-				{
-					GotoXY(j, i);
-					setConsoleColor(theScene_[i][j].getForeground());
-					std::cout << theScene_[i][j].content_;
-				} else
-				{
-					GotoXY(j, i);
-					setConsoleColor(theScene_[i][j].getForeground());
-					std::cout << theScene_[i][j].content_;
-				}*/
-
-				if (theScene_[i][j].content_ == thePrevScene_[i][j].content_ &&
-					theScene_[i][j].foreground_ == thePrevScene_[i][j].foreground_ &&
-					theScene_[i][j].background_ == thePrevScene_[i][j].background_)
+				if (_currScene[i][j]._content == _prevScene[i][j]._content && _currScene[i][j]._bafoGround == _prevScene[i][j]._bafoGround)
 					continue;
 
 				GotoXY(j, i);
-				setConsoleColor(theScene_[i][j].getBackground() | theScene_[i][j].getForeground());
-				std::cout << theScene_[i][j].content_;
+				setConsoleColor(_currScene[i][j]._bafoGround);
+				std::cout << _currScene[i][j]._content;
 			}
 		}
+		// Force all char in buffer must write to console
 		std::cout.flush();
 
-		for (int i = 0; i < height_; ++i)
-			memcpy(thePrevScene_[i], theScene_[i], sizeof(Pixel) * width_);
+		SwapScene();
+		ClearScene();
 
-		drawContentWhite();
-		drawAllWhite();
+		DoneFrame();
 	}
 };
